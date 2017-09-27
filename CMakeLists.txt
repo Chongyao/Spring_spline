@@ -4,8 +4,10 @@ project(meshSimp)
 
 set(CMAKE_CXX_STANDARD 11)
 
+file(GLOB header *.h)
 set(SOURCE_FILES main.cpp)
 file(GLOB SOURCE_FILES *.cpp)
+
 
 add_executable(meshSimp ${SOURCE_FILES})
 
