@@ -6,6 +6,15 @@
 #include<memory>
 #include<vector>
 #include<string>
+
+using namespace std;
+
+bool operator<(const H_edge &a, const H_edge &b)
+      {
+       return a.length<b.length;
+      }
+
+
 halfedge::halfedge()
 {
 }
@@ -51,6 +60,7 @@ void halfedge::ReadVertex( ifstream &fin,string &keyword){
     fin>>vertex_temp.x;
     fin>>vertex_temp.y;
     fin>>vertex_temp.z;
+    vertex_temp.is_exist=true;
     //        auto pointer=make_shared<H_vertex>(vertex_temp);
     this->Vertexs.push_back(vertex_temp);
 
@@ -93,9 +103,11 @@ void halfedge::ConstructHalfedge(){
 
     for(size_t i=0;i<num/3;i++){
         Faces[i].edge_=i*3;
+        Faces[i].is_exist=true;
         for(size_t k=i*3;k<(i+1)*3;k++){
             HalfEdges[k].vertex_=InitFaces[k];
             Vertexs[InitFaces[k]].edge_=k;
+            HalfEdges[k].is_exist=true;
 
             HalfEdges[k].face_=i;
 
@@ -129,9 +141,9 @@ void halfedge::ConstructHalfedge(){
         }
         for(size_t j=i+1;j<num;j++){
             if(isFind[j]) continue;
-            int next2=InitFaces[j];
+            int next2 = InitFaces[j];
 
-            if(next2!=prev1) continue;
+            if(next2 != prev1) continue;
 
             int prev2;{
                 if (j % 3 == 0)
@@ -141,16 +153,21 @@ void halfedge::ConstructHalfedge(){
             }
 
             if (next1 == prev2 && next2 == prev1 ){
-                isFind[i]=true;
-                isFind[j]=true;
+                isFind[i] = true;
+                isFind[j] = true;
 //                cout<<i<<"   "<<j<<"   \n";
-                HalfEdges[i].oppo_=j;
-                HalfEdges[j].oppo_=i;
+                HalfEdges[i].oppo_ = j;
+                HalfEdges[j].oppo_ = i;
             }
         }
         if(isFind[i]==false) cout<<"halfedge"<< i <<"can't find it's opposite!\n";
     }
 
     cout<<"the data has been converted to halfedge constructure.\n";
+}
+
+size_t halfedge::Get_edge_next(size_t edge_id)
+{
+    return this->HalfEdges[edge_id].next_;
 }
 

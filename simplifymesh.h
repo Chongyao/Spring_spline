@@ -1,11 +1,31 @@
 #ifndef SIMPLIFYMESH_H
 #define SIMPLIFYMESH_H
+#include"halfedge.h"
 
-
-class SimplifyMesh
-{
-public:
-    SimplifyMesh();
+struct ident{
+        size_t id;
+        double  ident;
 };
 
-#endif // SIMPLIFYMESH_H
+class simplify_mesh
+{
+public:
+    simplify_mesh(halfedge &HE):mesh_init(HE){}
+    halfedge mesh_init;
+
+    void Simp_shorstest();
+
+private:
+    vector<idnt> priority;
+
+
+};
+
+#endif // SIMPLIFYMESH_0
+
+
+
+
+
+
+
