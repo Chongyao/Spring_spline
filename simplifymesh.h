@@ -17,6 +17,7 @@ public:
 
 private:
   vector<idnt> priority;
+  void make_priority();
   void change_topology (const size_t &edge_id, const size_t &edge_oppo_id);
 
 };

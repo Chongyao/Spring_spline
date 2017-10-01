@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/mac/qtdocument/meshSimp/halfedge.cpp
+halfedge.h
+/Users/mac/qtdocument/meshSimp/halfedge.h
+fstream
+-
+sstream
+-
+cmath
+-
+iostream
+-
+memory
+-
+vector
+-
+string
+-
+
+/Users/mac/qtdocument/meshSimp/halfedge.h
+memory
+-
+vector
+-
+string
+-
+
+/Users/mac/qtdocument/meshSimp/main.cpp
+iostream
+-
+halfedge.h
+/Users/mac/qtdocument/meshSimp/halfedge.h
+
