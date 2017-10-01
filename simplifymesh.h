@@ -16,8 +16,8 @@ public:
     void Simp_shorstest();
 
 private:
-    vector<idnt> priority;
-
+  vector<idnt> priority;
+  void change_topology (const size_t &edge_id, const size_t &edge_oppo_id);
 
 };
 

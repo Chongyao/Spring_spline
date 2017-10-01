@@ -14,10 +14,8 @@ struct H_vertex{
   double z;
   size_t edge_;
   bool is_exist;
-//  shared_ptr<H_edge> edge;
 };
 struct H_face{
-//  shared_ptr<H_edge> edge;
     size_t edge_;
     bool is_exist;
 };
@@ -29,13 +27,7 @@ struct H_edge{ // read_only to others
 //  const halfedge &HE_;
   double length;
   bool is_exist;
-//  shared_ptr<H_vertex> vertex;
-//  shared_ptr<H_face> face;
-//  shared_ptr<H_edge> next;
-//  shared_ptr<H_edge> prev;
-//  shared_ptr<H_edge> opposite;
 };
-
 
 
 class halfedge
