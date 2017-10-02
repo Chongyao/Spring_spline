@@ -35,13 +35,14 @@ int halfedge::ReadData(const string &InputFile){
             ReadAnno(fin,keyword);
 
         else if(keyword=="v")
-            ReadVertex(fin,keyword);
+           ReadVertex(fin,keyword);
 
         else if(keyword=="f")
             ReadFace(fin,keyword);
 
         else if(keyword=="vn")
            ReadAnno(fin,keyword);
+
         else
            cout<<"this identity is not exit";
 
@@ -60,7 +61,7 @@ void halfedge::ReadVertex( ifstream &fin,string &keyword){
     fin>>vertex_temp.x;
     fin>>vertex_temp.y;
     fin>>vertex_temp.z;
-    vertex_temp.is_exist=true;
+    //    vertex_temp.is_exist=true;
     //        auto pointer=make_shared<H_vertex>(vertex_temp);
     this->Vertexs.push_back(vertex_temp);
 
@@ -103,17 +104,17 @@ void halfedge::ConstructHalfedge(){
 
     for(size_t i=0;i<num/3;i++){
         Faces[i].edge_=i*3;
-        Faces[i].is_exist=true;
+        //       Faces[i].is_exist=true;
         for(size_t k=i*3;k<(i+1)*3;k++){
             HalfEdges[k].vertex_=InitFaces[k];
             Vertexs[InitFaces[k]].edge_=k;
-            HalfEdges[k].is_exist=true;
+            //  HalfEdges[k].is_exist=true;
 
             HalfEdges[k].face_=i;
 
             if(k==i*3){
                 HalfEdges[k].prev_=k+2;
-                HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k+2]].x-Vertexs[InitFaces[k]].x),2)+
+                HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]].x-Vertexs[InitFaces[k]].x),2)+
                         pow((Vertexs[InitFaces[k+2]].y-Vertexs[InitFaces[k]].y),2)+
                         pow((Vertexs[InitFaces[k+2]].z-Vertexs[InitFaces[k]].z),2));
             }
@@ -160,7 +161,7 @@ void halfedge::ConstructHalfedge(){
                 HalfEdges[j].oppo_ = i;
             }
         }
-        if(isFind[i]==false) cout<<"halfedge"<< i <<"can't find it's opposite!\n";
+        //        if(isFind[i]==false) cout<<"halfedge"<< i <<"can't find it's opposite!\n";
     }
 
     cout<<"the data has been converted to halfedge constructure.\n";

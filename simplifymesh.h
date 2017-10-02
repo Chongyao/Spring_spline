@@ -4,7 +4,7 @@
 
 struct ident{
         size_t id;
-        double  ident;
+        double  value;
 };
 
 class simplify_mesh
@@ -16,17 +16,10 @@ public:
     void Simp_shorstest();
 
 private:
-  vector<idnt> priority;
+  std::vector<ident> priority;
   void make_priority();
   void change_topology (const size_t &edge_id, const size_t &edge_oppo_id);
-
+  void pop_priority();
 };
 
 #endif // SIMPLIFYMESH_0
-
-
-
-
-
-
-

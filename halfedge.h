@@ -1,4 +1,4 @@
-ccd git g #ifndef HALFEDGE_H
+#ifndef HALFEDGE_H
 #define HALFEDGE_H
 #include<memory>
 #include<vector>
@@ -9,6 +9,8 @@ struct H_vertex ;
 struct H_face ;
 struct H_edge;
 struct H_vertex{
+H_vertex():
+  is_exist(true){};
   double x;
   double y;
   double z;
@@ -16,14 +18,17 @@ struct H_vertex{
   bool is_exist;
 };
 struct H_face{
+H_face():
+  is_exist(true){};
     size_t edge_;
     bool is_exist;
 };
 struct H_edge{ // read_only to others
-//    H_edge(const halfedge &HE)
-//        :HE_(HE) {}
+  H_edge():
+      oppo_(-1),  is_exist(true) {};
 
-  size_t next_, prev_, oppo_,face_,vertex_;
+  size_t next_, prev_, face_, vertex_;
+  int oppo_;
 //  const halfedge &HE_;
   double length;
   bool is_exist;
