@@ -3,19 +3,20 @@
 #include"halfedge.h"
 
 struct ident{
-        size_t id;
-        double  value;
+  size_t id;
+  double  value;
 };
 
 class simplify_mesh
 {
-public:
-    simplify_mesh(halfedge &HE):mesh_init(HE){}
-    halfedge mesh_init;
+ public:
+  simplify_mesh(halfedge &HE):mesh_init(HE){}
+  halfedge mesh_init;
 
-    void Simp_shorstest();
+  void Simp_shorstest(const size_t &iter_times);
+  // int main_();
 
-private:
+ private:
   std::vector<ident> priority;
   void make_priority();
   void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);

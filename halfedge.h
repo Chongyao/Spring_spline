@@ -9,8 +9,8 @@ struct H_vertex ;
 struct H_face ;
 struct H_edge;
 struct H_vertex{
-H_vertex():
-  is_exist(true){};
+  H_vertex():
+      is_exist(true){};
   double x;
   double y;
   double z;
@@ -18,10 +18,10 @@ H_vertex():
   bool is_exist;
 };
 struct H_face{
-H_face():
-  is_exist(true){};
-    size_t edge_;
-    bool is_exist;
+  H_face():
+      is_exist(true){};
+  size_t edge_;
+  bool is_exist;
 };
 struct H_edge{ // read_only to others
   H_edge():
@@ -29,7 +29,7 @@ struct H_edge{ // read_only to others
 
   size_t next_, prev_, face_, vertex_;
   int oppo_;
-//  const halfedge &HE_;
+  //  const halfedge &HE_;
   double length;
   bool is_exist;
 };
@@ -37,33 +37,28 @@ struct H_edge{ // read_only to others
 
 class halfedge
 {
-public:
-    halfedge();
+ public:
+  halfedge();
 
-    std::vector<int> InitFaces;
-    int ReadData(const std::string &InputFile);
+  std::vector<int> InitFaces;
+  int ReadData(const std::string &InputFile);
 
-    void ConstructHalfedge();
+  void ConstructHalfedge();
 
-    //core structure
-    std::vector<H_edge> HalfEdges;
-    std::vector<H_face> Faces;
-    std::vector<H_vertex> Vertexs;
+  //core structure
+  std::vector<H_edge> HalfEdges;
+  std::vector<H_face> Faces;
+  std::vector<H_vertex> Vertexs;
 
+  //get information
 
-    //get information
+  size_t Get_edge_next(size_t edge_id);
+  void halfedge_to_obj( const std::string & outfile);
+ private:
+  void ReadVertex(std::ifstream &fin, std::string &keyword);
+  void ReadFace(std::ifstream &fin, std::string &keyword);
+  void ReadAnno(std::ifstream &fin, std::string &keyword);
 
-    size_t Get_edge_next(size_t edge_id);
-
-
-
-private:
-    void ReadVertex(std::ifstream &fin, std::string &keyword);
-    void ReadFace(std::ifstream &fin, std::string &keyword);
-    void ReadAnno(std::ifstream &fin, std::string &keyword);
-
-
-
-
+  std::string filename;
 };
 #endif // HALFEDGE_H

@@ -12,12 +12,17 @@ bool operator>(const ident &a, const ident &b){
   return a. value > b. value;
 }
 
+    
 
-void simplify_mesh::
 
-Simp_shorstest(){
+
+
+void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //find the shortest edge
   make_priority();
+
+  
+  for(size_t i = 0; i < iter_times; i++){
   const size_t edge_id = priority[ 0 ]. id;
   const int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
   
@@ -27,18 +32,13 @@ Simp_shorstest(){
   result = check_manifold(edge_id, edge_oppo_id);
   }while(result == -1);
     
-    
-    
   //change the topology
-
-
-  
-   
   change_topology(edge_id,edge_oppo_id,result);
   
-
   //pop the priority
   pop_priority();
+
+  }
 }
 
 void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo_id, const int &result){
@@ -98,7 +98,7 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
 
       edge_change_id_2 = mesh_init. HalfEdges [edge_change_id_1]. next_;
       edge_change_id_1 = mesh_init. HalfEdges [edge_change_id_2]. oppo_;
-    }while ( edge_change_id != edge_end_id);
+    }while ( edge_change_id_1 != edge_end_id);
   }
 
 
@@ -124,30 +124,33 @@ void simplify_mesh::pop_priority(){
 int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id){
   int edge_bound_id=-2;
   bool is_cllap = true;
-
   
+  int edge_r;
   if ( edge_oppo_id != -1 ){
 
     bool is_bound_p = false;{ //check if p is on the boundry
-      int edge_r = edge_id; 
+      edge_r = edge_id; 
       do{
         edge_r = mesh_init. HalfEdges [edge_r]. next_;
         edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
 
-        if (edge_r == -1) 
+        if (edge_r == -1) {
           is_bound_p = true;
+          break;
+        }
       }while(edge_r != edge_id);
     }
     
     bool is_bound_q = false;{ // check if q is on the boundry
       
-      //      int edge_r_1 = edge_oppo_id,edge_r_2;
+      int edge_r_1 = edge_oppo_id,edge_r_2;
       do{
         edge_r_2 = mesh_init. HalfEdges [edge_r_1]. prev_;
         edge_r_1 = mesh_init. HalfEdges [edge_r_2]. oppo_;
         if (edge_r_1 == -1) {
           edge_bound_id = edge_r_2;
           is_bound_q = true;
+          break;
         }
       }while(edge_r_1 != edge_id);
     }
@@ -155,10 +158,11 @@ int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id
     if (is_bound_q && is_bound_p){
       is_cllap == false;
       goto pop;
+    }
   }
   
    // check if this edge will
-    int edge_r = mesh_init. HalfEdges [edge_id]. next_;
+    edge_r = mesh_init. HalfEdges [edge_id]. next_;
     edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
     edge_r = mesh_init. HalfEdges [edge_r]. prev_;
     edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
