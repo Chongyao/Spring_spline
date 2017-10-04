@@ -19,9 +19,7 @@ iostream
 -
 memory
 -
-vector
--
-string
+map
 -
 
 /home/zcy/projects/meshsimp/halfedge.h
@@ -37,6 +35,8 @@ iostream
 -
 halfedge.h
 /home/zcy/projects/meshsimp/halfedge.h
+simplifymesh.h
+/home/zcy/projects/meshsimp/simplifymesh.h
 
 /home/zcy/projects/meshsimp/simplifymesh.cpp
 simplifymesh.h

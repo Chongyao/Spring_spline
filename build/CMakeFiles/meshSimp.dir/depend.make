@@ -6,6 +6,7 @@ CMakeFiles/meshSimp.dir/halfedge.cpp.o: ../halfedge.h
 
 CMakeFiles/meshSimp.dir/main.cpp.o: ../halfedge.h
 CMakeFiles/meshSimp.dir/main.cpp.o: ../main.cpp
+CMakeFiles/meshSimp.dir/main.cpp.o: ../simplifymesh.h
 
 CMakeFiles/meshSimp.dir/simplifymesh.cpp.o: ../halfedge.h
 CMakeFiles/meshSimp.dir/simplifymesh.cpp.o: ../simplifymesh.cpp
