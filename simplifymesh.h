@@ -18,8 +18,9 @@ public:
 private:
   std::vector<ident> priority;
   void make_priority();
-  void change_topology (const size_t &edge_id, const size_t &edge_oppo_id);
+  void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);
   void pop_priority();
+  int check_manifold(const size_t &edge_id, const int &edge_oppo_id);
 };
 
 #endif // SIMPLIFYMESH_0
