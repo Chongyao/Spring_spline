@@ -1,3 +1,0 @@
-/home/zcy/projects/meshsimp/build/CMakeFiles/edit_cache.dir
-/home/zcy/projects/meshsimp/build/CMakeFiles/rebuild_cache.dir
-/home/zcy/projects/meshsimp/build/CMakeFiles/meshSimp.dir
