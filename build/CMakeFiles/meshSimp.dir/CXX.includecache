@@ -43,6 +43,8 @@ simplifymesh.h
 /home/zcy/projects/meshsimp/simplifymesh.h
 algorithm
 -
+iostream
+-
 
 /home/zcy/projects/meshsimp/simplifymesh.h
 halfedge.h

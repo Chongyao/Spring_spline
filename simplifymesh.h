@@ -1,3 +1,4 @@
+
 #ifndef SIMPLIFYMESH_H
 #define SIMPLIFYMESH_H
 #include"halfedge.h"
@@ -20,8 +21,8 @@ class simplify_mesh
   std::vector<ident> priority;
   void make_priority();
   void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);
-  void pop_priority();
-  int check_manifold(const size_t &edge_id, const int &edge_oppo_id);
+  void pop_priority(const size_t &edge_id);
+  int check_manifold( size_t &edge_id,  int &edge_oppo_id);
 };
 
 #endif // SIMPLIFYMESH_0

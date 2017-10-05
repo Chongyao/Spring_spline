@@ -204,5 +204,5 @@ void halfedge::halfedge_to_obj( const string &outfile){
     }
   }
   fout.close();
-  
+  cout<<"\nend of writing";  
 }

@@ -1,43 +1,49 @@
-
 #include "simplifymesh.h"
 #include<algorithm>
+#include<iostream>
 #define INF 99999999；
 using namespace std;
 
-bool operator <(const ident &a,const ident &b){
-  return a. value < b. value;
-}
-
 bool operator>(const ident &a, const ident &b){
   return a. value > b. value;
+
 }
-
-    
-
-
-
+bool operator <(const ident &a,const ident &b){
+    return a. value < b. value;
+}
 
 void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //find the shortest edge
   make_priority();
-
-  
+   
   for(size_t i = 0; i < iter_times; i++){
-  const size_t edge_id = priority[ 0 ]. id;
-  const int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
-  
-  //check the manifold
-  int result;
-  do{
-  result = check_manifold(edge_id, edge_oppo_id);
-  }while(result == -1);
-    
-  //change the topology
-  change_topology(edge_id,edge_oppo_id,result);
-  
-  //pop the priority
-  pop_priority();
 
+    for (size_t i = 0;i < 10; i++){
+      cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
+    }
+    cout<<"\n";
+  
+    cout << i << " iteration:\n";
+    size_t edge_id = priority[ 0 ]. id;
+    int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
+    
+    //check the manifold
+    int result;
+    do{
+      result = check_manifold(edge_id, edge_oppo_id);
+      cout << "result of check of manifold is "<< result <<"\n";
+    }while(result == -1);
+
+    //pop the priority
+    pop_priority(edge_id);
+      
+    //change the topology
+    cout << "the edge to be collapsed is " << edge_id <<"\n";
+    change_topology(edge_id,edge_oppo_id,result);
+  
+
+    cout<<"\n\n";
+  
   }
 }
 
@@ -47,16 +53,18 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       edge_r_id = mesh_init.HalfEdges[edge_id].next_;
     }while(edge_id == edge_r_id);
- 
     edge_r_id = mesh_init.HalfEdges[edge_id].oppo_;
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       edge_r_id = mesh_init.HalfEdges[edge_id].next_;
     }while(edge_id == edge_r_id);
     mesh_init.HalfEdges[edge_oppo_id].is_exist=false;
+    cout <<"the edges have been deleted.\n";
   }
+  
   size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;{    //delete the vertex
     mesh_init.Vertexs [ vertex_r_id ].is_exist = false;
+    cout<<"the vertex has been deleted.\n";
   }
 
   size_t face_r_id = mesh_init.HalfEdges[ edge_id ].face_;{    //delete the face
@@ -65,8 +73,8 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
     face_r_id = mesh_init. HalfEdges[ edge_oppo_id ]. face_;
     mesh_init. Faces[ face_r_id ]. is_exist = false;
     }
+    cout<<"the face has been deleted.\n";
   }
-
 
   { //change the vertex
     const size_t vertex_ur_id = mesh_init.HalfEdges[ edge_id]. vertex_;
@@ -101,6 +109,25 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
     }while ( edge_change_id_1 != edge_end_id);
   }
 
+  {  //change the opposite edge
+  size_t edge_oppo_ur = mesh_init. HalfEdges [edge_id]. next_;
+  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_ur]. oppo_;
+   
+  size_t edge_change_id = mesh_init. HalfEdges [edge_id]. prev_;
+  edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
+  mesh_init. HalfEdges [edge_change_id]. oppo_ = edge_oppo_ur;
+  mesh_init. HalfEdges [edge_oppo_ur]. oppo_ = edge_change_id;
+  
+  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_id]. prev_;
+  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_ur]. oppo_;
+
+  edge_change_id = mesh_init. HalfEdges [edge_oppo_id]. next_;
+  edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
+  mesh_init. HalfEdges [edge_change_id]. oppo_ = edge_oppo_ur;
+  mesh_init. HalfEdges [edge_oppo_ur]. oppo_ = edge_change_id;
+  }
+
+  cout << "the vertex have been changed.\n";
 
 }
 void simplify_mesh::make_priority(){
@@ -110,26 +137,49 @@ void simplify_mesh::make_priority(){
     priority[i].id = i;
     priority[i].value = mesh_init.HalfEdges[i].length;
   }
-  make_heap(priority.begin(), priority.end(), greater<ident>());
-  sort_heap(priority.begin(),priority.end(), greater<ident>());
 
-
+  make_heap(priority.begin(),priority.end(),greater<ident>());
   
 }
-void simplify_mesh::pop_priority(){
-  pop_heap( priority.begin(), priority.end(), greater<ident>()); 
-  pop_heap( priority.begin(), priority.end(), greater<ident>());
+void simplify_mesh::pop_priority(const size_t &edge_id){
+  // for (size_t i = 0;i < 10; i++){
+  //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
+  // }
+  // cout<<"\n";
+
+  if (mesh_init. HalfEdges[edge_id]. oppo_ !=-1){
+    pop_heap (priority.begin(), priority.end(),greater<ident>());
+    priority.pop_back();
+    // for (size_t i = 0;i < 10; i++){
+    //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
+    // }
+    // cout<<"\n";
+
+    pop_heap (priority.begin(), priority.end(),greater<ident>());
+    priority.pop_back();
+    // for (size_t i = 0;i < 10; i++){
+    //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
+    // }
+    // cout<<"\n";
+  }
+  else{
+    pop_heap (priority.begin(), priority.end(),greater<ident>());
+    priority.pop_back();
+  }
   
 }
-int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id){
+int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
   int edge_bound_id=-2;
   bool is_cllap = true;
-  
-  int edge_r;
-  if ( edge_oppo_id != -1 ){
 
+  if(!mesh_init. HalfEdges [edge_id].is_exist) {
+    is_cllap = false;
+    goto pop;
+  }
+
+  if ( edge_oppo_id != -1 ){
     bool is_bound_p = false;{ //check if p is on the boundry
-      edge_r = edge_id; 
+      int edge_r = edge_id; 
       do{
         edge_r = mesh_init. HalfEdges [edge_r]. next_;
         edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
@@ -140,10 +190,10 @@ int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id
         }
       }while(edge_r != edge_id);
     }
+    if(! is_bound_p) cout<<"p is not on the bound\n";
     
     bool is_bound_q = false;{ // check if q is on the boundry
-      
-      int edge_r_1 = edge_oppo_id,edge_r_2;
+      int edge_r_1 = edge_id,edge_r_2;
       do{
         edge_r_2 = mesh_init. HalfEdges [edge_r_1]. prev_;
         edge_r_1 = mesh_init. HalfEdges [edge_r_2]. oppo_;
@@ -154,15 +204,15 @@ int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id
         }
       }while(edge_r_1 != edge_id);
     }
-    
+
+    if (!is_bound_q) cout << "q is not on the bound\n";
     if (is_bound_q && is_bound_p){
       is_cllap == false;
       goto pop;
-    }
-  }
+    }}
   
-   // check if this edge will
-    edge_r = mesh_init. HalfEdges [edge_id]. next_;
+ {  // check if this edge will
+    int edge_r = mesh_init. HalfEdges [edge_id]. next_;
     edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
     edge_r = mesh_init. HalfEdges [edge_r]. prev_;
     edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
@@ -186,14 +236,14 @@ int simplify_mesh::check_manifold(const size_t &edge_id, const int &edge_oppo_id
         is_cllap = false;
         goto pop;
       }
-   
-    }  
+    }
+  }
   
-  
+    if (is_cllap) cout<< "the edge is collapsable\n";  
 pop:
   if (is_cllap == false) {
-    pop_priority();
-    edge_bound_id = -1;
+    pop_priority(edge_id);
+    edge_bound_id = -1;   
   }
   return edge_bound_id;
 }
