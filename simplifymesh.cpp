@@ -1,3 +1,4 @@
+#include<cmath>
 #include "simplifymesh.h"
 #include<algorithm>
 #include<iostream>
@@ -225,7 +226,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
 
     if (!is_bound_q) cout << "q is not on the bound\n";
     if (is_bound_q && is_bound_p){
-      is_cllap == false;
+      is_cllap = false;
       cout << "the p and q is on the bound.\n";
       goto pop;
     }}
