@@ -7,7 +7,7 @@ using namespace std;
 int main()
 {
     halfedge data;
-    string Input="../data/input/bunny.obj";
+    string Input="../data/input/sphere.obj";
     data.ReadData(Input);
     data.ConstructHalfedge();
     simplify_mesh data_simp(data);
