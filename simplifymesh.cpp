@@ -100,7 +100,7 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
     do{
 
       mesh_init. HalfEdges[ edge_change_id_1]. vertex_ = vertex_ur_id;
-
+      edge_change_id_2 = mesh_init. HalfEdges [edge_change_id_1]. next_;
       double length;{ //change the length
         size_t edge_pre_id = mesh_init. HalfEdges [edge_change_id_1]. prev_; 
         size_t vertex_pre_id = mesh_init. HalfEdges [edge_pre_id]. vertex_;
@@ -114,7 +114,7 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
         priority [edge_change_id_2]. value = length;
       } 
 
-      edge_change_id_2 = mesh_init. HalfEdges [edge_change_id_1]. next_;
+
       edge_change_id_1 = mesh_init. HalfEdges [edge_change_id_2]. oppo_;
     }while ( edge_change_id_1 != edge_end_id);
   }

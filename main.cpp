@@ -1,7 +1,7 @@
 #include <iostream>
 #include"halfedge.h"
 #include"simplifymesh.h"
-#define iter_times 10
+#define iter_times 50
 using namespace std;
 
 int main()
