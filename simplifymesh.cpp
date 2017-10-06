@@ -2,6 +2,7 @@
 #include<algorithm>
 #include<iostream>
 #define INF 99999999；
+
 using namespace std;
 
 bool operator>(const ident &a, const ident &b){
@@ -15,7 +16,7 @@ bool operator <(const ident &a,const ident &b){
 void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //find the shortest edge
   make_priority();
-   
+  //  string Output = "../data/output/cube_tu_",fix = ".obj";
   for(size_t i = 0; i < iter_times; i++){
 
     for (size_t i = 0;i < 10; i++){
@@ -41,7 +42,16 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
     cout << "the edge to be collapsed is " << edge_id <<"\n";
     change_topology(edge_id,edge_oppo_id,result);
   
-
+    // //output
+    // stringstream temp;
+    // string temp_;
+    // temp<<i;
+    // temp>>temp_;
+    // Output. append(temp_);
+    // Output. append(fix);
+    // cout << Output <<"\n";
+    // mesh_init. halfedge_to_obj(Output);
+    
     cout<<"\n\n";
   
   }
@@ -142,25 +152,13 @@ void simplify_mesh::make_priority(){
   
 }
 void simplify_mesh::pop_priority(const size_t &edge_id){
-  // for (size_t i = 0;i < 10; i++){
-  //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
-  // }
-  // cout<<"\n";
 
   if (mesh_init. HalfEdges[edge_id]. oppo_ !=-1){
     pop_heap (priority.begin(), priority.end(),greater<ident>());
     priority.pop_back();
-    // for (size_t i = 0;i < 10; i++){
-    //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
-    // }
-    // cout<<"\n";
 
     pop_heap (priority.begin(), priority.end(),greater<ident>());
     priority.pop_back();
-    // for (size_t i = 0;i < 10; i++){
-    //   cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
-    // }
-    // cout<<"\n";
   }
   else{
     pop_heap (priority.begin(), priority.end(),greater<ident>());
@@ -208,10 +206,11 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
     if (!is_bound_q) cout << "q is not on the bound\n";
     if (is_bound_q && is_bound_p){
       is_cllap == false;
+      cout << "the p and q is on the bound.\n";
       goto pop;
     }}
   
- {  // check if this edge will
+ {  // check if this edge is in three triangles
     int edge_r = mesh_init. HalfEdges [edge_id]. next_;
     edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
     edge_r = mesh_init. HalfEdges [edge_r]. prev_;
@@ -234,6 +233,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
       edge_r = mesh_init. HalfEdges [edge_r]. next_;
       if (edge_r == edge_id) {
         is_cllap = false;
+        cout << "the edge has three triangles.\n";
         goto pop;
       }
     }
@@ -243,7 +243,8 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
 pop:
   if (is_cllap == false) {
     pop_priority(edge_id);
-    edge_bound_id = -1;   
+    edge_bound_id = -1;
+    edge_id = priority[0]. id;
   }
   return edge_bound_id;
 }

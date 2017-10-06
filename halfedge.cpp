@@ -27,7 +27,6 @@ int halfedge::ReadData(const string &InputFile){
   string keyword;
   fin>>keyword;
 
-
   while(!fin.eof()){  //read the data line by line
     if(keyword=="#")
       ReadAnno(fin,keyword);
@@ -40,9 +39,12 @@ int halfedge::ReadData(const string &InputFile){
 
     else if(keyword=="vn")
       ReadAnno(fin,keyword);
-
+    
+    else if(keyword == "s")
+      ReadAnno(fin,keyword);
+    
     else
-      cout<<"this identity is not exit";
+      cout<<"this identity is not exit.\n";
 
   }
 
@@ -59,8 +61,6 @@ void halfedge::ReadVertex( ifstream &fin,string &keyword){
   fin>>vertex_temp.x;
   fin>>vertex_temp.y;
   fin>>vertex_temp.z;
-  //    vertex_temp.is_exist=true;
-  //        auto pointer=make_shared<H_vertex>(vertex_temp);
   this->Vertexs.push_back(vertex_temp);
 
   fin>>keyword;
@@ -68,19 +68,32 @@ void halfedge::ReadVertex( ifstream &fin,string &keyword){
 
 void halfedge::ReadFace(ifstream &fin,string &keyword){
   fin>>keyword;
-  while(keyword != "f" && !fin.eof()){
+  int position = keyword.find("/",0);
+  if (position != -1){
+    while(keyword != "f" && !fin.eof()){
+      int vert_id; { // atof(keyword)
+        keyword.erase(keyword.begin()+keyword.find("/",0),keyword.end());
+        stringstream temp;
+        temp << keyword;
+        temp >> vert_id;
+      }
+      InitFaces.push_back(vert_id);
+    }
+  }
+  else{
     int vert_id; { // atof(keyword)
-      keyword.erase(keyword.begin()+keyword.find("/",0),keyword.end());
       stringstream temp;
       temp << keyword;
       temp >> vert_id;
+      InitFaces.push_back(vert_id);
+      fin >> vert_id;
+      InitFaces.push_back(vert_id);
+      fin >> vert_id;
+      InitFaces.push_back(vert_id);
     }
-    InitFaces.push_back(vert_id);
-
     fin>>keyword;
   }
 }
-
 void halfedge::ReadAnno(ifstream &fin, string &keyword){
   string temp;
   getline(fin,temp);
@@ -93,12 +106,8 @@ void halfedge::ConstructHalfedge(){
   size_t num=InitFaces.size();
 
   Faces=vector<H_face>(num/3);
-  //    for(auto it=Faces.begin();it!=Faces.end();it++)
-  //        *it=make_shared<H_face>();
 
   HalfEdges=vector<H_edge> (num);
-  //    for(auto it=HalfEdges.begin();it!=HalfEdges.end();it++)
-  //        *it=make_shared<H_edge>();
 
   for(size_t i=0;i<num/3;i++){
     Faces[i].edge_=i*3;
@@ -159,8 +168,8 @@ void halfedge::ConstructHalfedge(){
         HalfEdges[j].oppo_ = i;
       }
     }
-    //        if(isFind[i]==false) cout<<"halfedge"<< i <<"can't find it's opposite!\n";
   }
+
 
   cout<<"the data has been converted to halfedge constructure.\n";
 }
