@@ -121,15 +121,15 @@ void halfedge::ConstructHalfedge(){
 
       if(k==i*3){
         HalfEdges[k].prev_=k+2;
-        HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]].x-Vertexs[InitFaces[k]].x),2)+
-                                  pow((Vertexs[InitFaces[k+2]].y-Vertexs[InitFaces[k]].y),2)+
-                                  pow((Vertexs[InitFaces[k+2]].z-Vertexs[InitFaces[k]].z),2));
+        HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]-1].x-Vertexs[InitFaces[k]-1].x),2)+
+                                  pow((Vertexs[InitFaces[k+2]-1].y-Vertexs[InitFaces[k]-1].y),2)+
+                                  pow((Vertexs[InitFaces[k+2]-1].z-Vertexs[InitFaces[k]-1].z),2));
       }
       else{
         HalfEdges[k].prev_=k-1;
-        HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k-1]].x-Vertexs[InitFaces[k]].x),2)+
-                                 pow((Vertexs[InitFaces[k-1]].y-Vertexs[InitFaces[k]].y),2)+
-                                 pow((Vertexs[InitFaces[k-1]].z-Vertexs[InitFaces[k]].z),2));
+        HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k-1]-1].x-Vertexs[InitFaces[k]-1].x),2)+
+                                 pow((Vertexs[InitFaces[k-1]-1].y-Vertexs[InitFaces[k]-1].y),2)+
+                                 pow((Vertexs[InitFaces[k-1]-1].z-Vertexs[InitFaces[k]-1].z),2));
       }
       if(k==i*3+2)
         HalfEdges[k].next_=k-2;
@@ -188,11 +188,11 @@ void halfedge::halfedge_to_obj( const string &outfile){
   ofstream fout(outfile);
   map<size_t,size_t> turn;
   size_t num_vertex = Vertexs. size();{
-    size_t count=0;
+    size_t count=1;
     for (size_t i = 0;i < num_vertex; i++){
       if (Vertexs[i]. is_exist){
         fout<<"v "<<Vertexs[i]. x<<" "<<Vertexs[i]. y<<" "<<Vertexs[i]. z<<"\n";
-        turn[i] = count;
+        turn[i+1] = count;
         ++count;
             }
     }

@@ -73,7 +73,7 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
   }
   
   size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;{    //delete the vertex
-    mesh_init.Vertexs [ vertex_r_id ].is_exist = false;
+    mesh_init.Vertexs [ vertex_r_id-1 ].is_exist = false;
     cout<<"the vertex has been deleted.\n";
   }
 
@@ -105,9 +105,9 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
         size_t edge_pre_id = mesh_init. HalfEdges [edge_change_id_1]. prev_; 
         size_t vertex_pre_id = mesh_init. HalfEdges [edge_pre_id]. vertex_;
         length =  sqrt(
-            pow((mesh_init.Vertexs[vertex_ur_id].x-mesh_init.Vertexs[vertex_pre_id].x),2)+
-            pow((mesh_init.Vertexs[vertex_ur_id].y-mesh_init.Vertexs[vertex_pre_id].y),2)+
-            pow((mesh_init.Vertexs[vertex_ur_id].z-mesh_init.Vertexs[vertex_pre_id].z),2));
+            pow((mesh_init.Vertexs[vertex_ur_id-1].x-mesh_init.Vertexs[vertex_pre_id-1].x),2)+
+            pow((mesh_init.Vertexs[vertex_ur_id-1].y-mesh_init.Vertexs[vertex_pre_id-1].y),2)+
+            pow((mesh_init.Vertexs[vertex_ur_id-1].z-mesh_init.Vertexs[vertex_pre_id-1].z),2));
         mesh_init. HalfEdges [edge_change_id_1]. length = length;
         priority [edge_change_id_1]. value = length;
         mesh_init. HalfEdges [edge_change_id_2]. length = length;
