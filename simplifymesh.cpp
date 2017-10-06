@@ -19,10 +19,10 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //  string Output = "../data/output/cube_tu_",fix = ".obj";
   for(size_t i = 0; i < iter_times; i++){
 
-    for (size_t i = 0;i < 10; i++){
-      cout<<"edge id is " << priority[i]. id << "  length is " << priority[i]. value <<"\n";
-    }
-    cout<<"\n";
+    // for (size_t j = 0;j < 10; j++){
+    //   cout<<"edge id is " << priority[j]. id << "  length is " << priority[j]. value <<"\n";
+    // }
+    // cout<<"\n";
   
     cout << i << " iteration:\n";
     size_t edge_id = priority[ 0 ]. id;
@@ -59,6 +59,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
 
 void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo_id, const int &result){
   size_t  edge_r_id = edge_id;{//delete the edges
+
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       edge_r_id = mesh_init.HalfEdges[edge_id].next_;
@@ -75,6 +76,9 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
   size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;{    //delete the vertex
     mesh_init.Vertexs [ vertex_r_id-1 ].is_exist = false;
     cout<<"the vertex has been deleted.\n";
+
+
+
   }
 
   size_t face_r_id = mesh_init.HalfEdges[ edge_id ].face_;{    //delete the face
@@ -175,6 +179,22 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
     goto pop;
   }
 
+
+   if (edge_id == 1406){
+     size_t id = edge_id;
+     do{
+
+       cout << "the edge is " << id <<" is exist "<< mesh_init. HalfEdges[id].is_exist<< " the vertex is "<< mesh_init. HalfEdges [id]. vertex_ << "\n";
+     id = mesh_init. HalfEdges [id].next_;
+
+     cout << "the edge is " << id <<"\n ";
+     id = mesh_init. HalfEdges [id].oppo_;
+     }while(id != edge_id);
+   }
+    
+
+
+  
   if ( edge_oppo_id != -1 ){
     bool is_bound_p = false;{ //check if p is on the boundry
       int edge_r = edge_id; 
@@ -245,6 +265,7 @@ pop:
     pop_priority(edge_id);
     edge_bound_id = -1;
     edge_id = priority[0]. id;
+    edge_oppo_id = mesh_init. HalfEdges [edge_id]. oppo_;
   }
   return edge_bound_id;
 }

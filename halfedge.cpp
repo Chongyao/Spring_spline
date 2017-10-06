@@ -181,6 +181,7 @@ size_t halfedge::Get_edge_next(size_t edge_id)
 
 
 
+
 void halfedge::halfedge_to_obj( const string &outfile){
 
   
@@ -194,7 +195,10 @@ void halfedge::halfedge_to_obj( const string &outfile){
         fout<<"v "<<Vertexs[i]. x<<" "<<Vertexs[i]. y<<" "<<Vertexs[i]. z<<"\n";
         turn[i+1] = count;
         ++count;
-            }
+      }
+      // else {
+      //   cout << "Vertex " << i+1 << " is deleted\n";
+      // }
     }
   }
   size_t num_faces = Faces. size();{
@@ -210,8 +214,37 @@ void halfedge::halfedge_to_obj( const string &outfile){
         }while(edge_id != edge_c);
         fout<<"\n";
       }
+      // else{
+      //   cout << "Face " << i << " is deleted.\n";
+      // }
     }
   }
   fout.close();
   cout<<"\nend of writing";  
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
