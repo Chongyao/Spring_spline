@@ -3,7 +3,9 @@
 /build/*
 /cmake-build-debug/*
 /data/*
+/CMakeFiles/*
 CMakeLists.txt.user
+CMakeCache.txt
 *~
 *.autosave
 *.a

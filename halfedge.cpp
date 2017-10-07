@@ -166,6 +166,7 @@ void halfedge::ConstructHalfedge(){
         //                cout<<i<<"   "<<j<<"   \n";
         HalfEdges[i].oppo_ = j;
         HalfEdges[j].oppo_ = i;
+        break;
       }
     }
   }

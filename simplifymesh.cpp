@@ -1,4 +1,3 @@
-#include<cmath>
 #include "simplifymesh.h"
 #include<algorithm>
 #include<iostream>
@@ -63,13 +62,13 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
 
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
-      edge_r_id = mesh_init.HalfEdges[edge_id].next_;
-    }while(edge_id == edge_r_id);
-    edge_r_id = mesh_init.HalfEdges[edge_id].oppo_;
+      edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
+    }while(edge_id != edge_r_id);
+    edge_r_id = edge_oppo_id;
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
-      edge_r_id = mesh_init.HalfEdges[edge_id].next_;
-    }while(edge_id == edge_r_id);
+      edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
+    }while(edge_oppo_id != edge_r_id);
     mesh_init.HalfEdges[edge_oppo_id].is_exist=false;
     cout <<"the edges have been deleted.\n";
   }
@@ -226,7 +225,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
 
     if (!is_bound_q) cout << "q is not on the bound\n";
     if (is_bound_q && is_bound_p){
-      is_cllap = false;
+      is_cllap == false;
       cout << "the p and q is on the bound.\n";
       goto pop;
     }}
