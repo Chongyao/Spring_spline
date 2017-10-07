@@ -19,15 +19,16 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //  string Output = "../data/output/cube_tu_",fix = ".obj";
   for(size_t i = 0; i < iter_times; i++){
 
-    // for (size_t j = 0;j < 10; j++){
-    //   cout<<"edge id is " << priority[j]. id << "  length is " << priority[j]. value <<"\n";
-    // }
-    // cout<<"\n";
+     for (size_t j = 0;j < 10; j++){
+       cout<<"edge id is " << priority[j]. id << "  length is " << priority[j]. value <<"\n";
+     }
+     cout<<"\n";
   
     cout << i << " iteration:\n";
-    size_t edge_id = priority[ 0 ]. id;
+    nsize_t edge_id = priority[ 0 ]. id;
     int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
     
+
     //check the manifold
     int result;
     do{
@@ -69,13 +70,12 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_oppo_id != edge_r_id);
-    mesh_init.HalfEdges[edge_oppo_id].is_exist=false;
     cout <<"the edges have been deleted.\n";
   }
   
   size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;{    //delete the vertex
     mesh_init.Vertexs [ vertex_r_id-1 ].is_exist = false;
-    cout<<"the vertex has been deleted.\n";
+    cout<<"the vertex " << vertex_r_id <<" has been deleted.\n";
 
 
 
@@ -106,14 +106,14 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
       mesh_init. HalfEdges[ edge_change_id_1]. vertex_ = vertex_ur_id;
       edge_change_id_2 = mesh_init. HalfEdges [edge_change_id_1]. next_;
       double length;{ //change the length
-        size_t edge_pre_id = mesh_init. HalfEdges [edge_change_id_1]. prev_; 
-        size_t vertex_pre_id = mesh_init. HalfEdges [edge_pre_id]. vertex_;
+        size_t vertex_pre_id = mesh_init. HalfEdges [edge_change_id_2]. vertex_;
         length =  sqrt(
             pow((mesh_init.Vertexs[vertex_ur_id-1].x-mesh_init.Vertexs[vertex_pre_id-1].x),2)+
             pow((mesh_init.Vertexs[vertex_ur_id-1].y-mesh_init.Vertexs[vertex_pre_id-1].y),2)+
             pow((mesh_init.Vertexs[vertex_ur_id-1].z-mesh_init.Vertexs[vertex_pre_id-1].z),2));
         mesh_init. HalfEdges [edge_change_id_1]. length = length;
         priority [edge_change_id_1]. value = length;
+
         mesh_init. HalfEdges [edge_change_id_2]. length = length;
         priority [edge_change_id_2]. value = length;
       } 
@@ -180,17 +180,17 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
   }
 
 
-   if (edge_id == 1406){
-     size_t id = edge_id;
-     do{
+   // if (edge_id == 1406){
+   //   size_t id = edge_id;
+   //   do{
 
-       cout << "the edge is " << id <<" is exist "<< mesh_init. HalfEdges[id].is_exist<< " the vertex is "<< mesh_init. HalfEdges [id]. vertex_ << "\n";
-     id = mesh_init. HalfEdges [id].next_;
+   //     cout << "the edge is " << id <<" is exist "<< mesh_init. HalfEdges[id].is_exist<< " the vertex is "<< mesh_init. HalfEdges [id]. vertex_ << "\n";
+   //   id = mesh_init. HalfEdges [id].next_;
 
-     cout << "the edge is " << id <<"\n ";
-     id = mesh_init. HalfEdges [id].oppo_;
-     }while(id != edge_id);
-   }
+   //   cout << "the edge is " << id <<"\n ";
+   //   id = mesh_init. HalfEdges [id].oppo_;
+   //   }while(id != edge_id);
+   // }
     
 
 
@@ -268,4 +268,13 @@ pop:
     edge_oppo_id = mesh_init. HalfEdges [edge_id]. oppo_;
   }
   return edge_bound_id;
+}
+void simplify_mesh::modify_priority (const ident &new_ident){//You must modify priority before modify the Halfedges vector
+  double length_old = mesh_init. HalfEdges[new_ident.id]. length;
+  for ()
+  
+
+
+
+  
 }

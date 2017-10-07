@@ -23,6 +23,7 @@ class simplify_mesh
   void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);
   void pop_priority(const size_t &edge_id);
   int check_manifold( size_t &edge_id,  int &edge_oppo_id);
+  void modify_priority(const ident &new_ident);
 };
 
 #endif // SIMPLIFYMESH_0
