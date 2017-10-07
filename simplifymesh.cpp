@@ -1,3 +1,4 @@
+#include<cmath>
 #include "simplifymesh.h"
 #include<algorithm>
 #include<iostream>
@@ -25,7 +26,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
      cout<<"\n";
   
     cout << i << " iteration:\n";
-    nsize_t edge_id = priority[ 0 ]. id;
+    size_t edge_id = priority[ 0 ]. id;
     int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
     
 
@@ -225,7 +226,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
 
     if (!is_bound_q) cout << "q is not on the bound\n";
     if (is_bound_q && is_bound_p){
-      is_cllap == false;
+      is_cllap = false;
       cout << "the p and q is on the bound.\n";
       goto pop;
     }}
@@ -271,7 +272,7 @@ pop:
 }
 void simplify_mesh::modify_priority (const ident &new_ident){//You must modify priority before modify the Halfedges vector
   double length_old = mesh_init. HalfEdges[new_ident.id]. length;
-  for ()
+  //x  for ()
   
 
 
