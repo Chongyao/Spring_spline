@@ -76,6 +76,7 @@ void halfedge::ReadFace(ifstream &fin,string &keyword){
         stringstream temp;
         temp << keyword;
         temp >> vert_id;
+        fin >> keyword;
       }
       InitFaces.push_back(vert_id);
     }
@@ -91,7 +92,8 @@ void halfedge::ReadFace(ifstream &fin,string &keyword){
       fin >> vert_id;
       InitFaces.push_back(vert_id);
     }
-    fin>>keyword;
+      fin >> keyword;
+
   }
 }
 void halfedge::ReadAnno(ifstream &fin, string &keyword){
