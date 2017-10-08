@@ -33,7 +33,9 @@ struct H_edge{ // read_only to others
   double length;
   bool is_exist;
 };
-
+struct vertex_pair{
+  size_t p , q ;
+};
 
 class halfedge
 {

@@ -12,7 +12,13 @@ bool operator<(const H_edge &a, const H_edge &b)
   return a.length<b.length;
 }
 
-
+bool operator<(const vertex_pair &a, const vertex_pair &b){
+  if(a.p == b.p)
+    return a.q < b.q;
+  else
+    return a.p < b.p;
+  
+}
 halfedge::halfedge()
 {
 }
@@ -94,6 +100,7 @@ void halfedge::ReadFace(ifstream &fin,string &keyword){
     }
       fin >> keyword;
 
+
   }
 }
 void halfedge::ReadAnno(ifstream &fin, string &keyword){
@@ -103,21 +110,22 @@ void halfedge::ReadAnno(ifstream &fin, string &keyword){
 
 }
 void halfedge::ConstructHalfedge(){
-  //    H_face face_temp;
-  //    H_edge edge_temp;
   size_t num=InitFaces.size();
 
+  map<vertex_pair,size_t> pairs;
   Faces=vector<H_face>(num/3);
 
   HalfEdges=vector<H_edge> (num);
 
   for(size_t i=0;i<num/3;i++){
     Faces[i].edge_=i*3;
-    //       Faces[i].is_exist=true;
     for(size_t k=i*3;k<(i+1)*3;k++){
       HalfEdges[k].vertex_=InitFaces[k];
+
+      vertex_pair v_pair_temp;
+      v_pair_temp.q = InitFaces[k];
+      
       Vertexs[InitFaces[k]].edge_=k;
-      //  HalfEdges[k].is_exist=true;
 
       HalfEdges[k].face_=i;
 
@@ -126,52 +134,80 @@ void halfedge::ConstructHalfedge(){
         HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]-1].x-Vertexs[InitFaces[k]-1].x),2)+
                                   pow((Vertexs[InitFaces[k+2]-1].y-Vertexs[InitFaces[k]-1].y),2)+
                                   pow((Vertexs[InitFaces[k+2]-1].z-Vertexs[InitFaces[k]-1].z),2));
+        v_pair_temp.p = InitFaces[k+2];
+        
       }
       else{
         HalfEdges[k].prev_=k-1;
         HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k-1]-1].x-Vertexs[InitFaces[k]-1].x),2)+
                                  pow((Vertexs[InitFaces[k-1]-1].y-Vertexs[InitFaces[k]-1].y),2)+
                                  pow((Vertexs[InitFaces[k-1]-1].z-Vertexs[InitFaces[k]-1].z),2));
+        v_pair_temp.p = InitFaces[k-1];
       }
       if(k==i*3+2)
-        HalfEdges[k].next_=k-2;
+        HalfEdges[k].next_= k-2;
       else
-        HalfEdges[k].next_=k+1;
+        HalfEdges[k].next_= k+1;
+
+      pairs[v_pair_temp] = k;
+    
+
     }
   }
-  vector<bool>isFind(num);
-  for(size_t i=0;i<num;++i){
-    if(isFind[i]) continue;
-    int next1=InitFaces[i];
-    int prev1;{
-      if (i % 3 == 0)
-        prev1 = InitFaces[i + 2];
-      else
-        prev1 = InitFaces[i - 1];
+
+  
+  //find the opposite by map
+  
+  for(auto it = pairs.begin();it != pairs.end(); it++){
+    auto it_oppo = pairs.find({it->first.q, it->first.p});
+    if(HalfEdges[it->second].oppo_ == -1 && it_oppo != pairs.end()){
+      HalfEdges[it->second].oppo_ = it_oppo->second;
+      HalfEdges[it_oppo->second].oppo_ = it->second;
+    
     }
-    for(size_t j=i+1;j<num;j++){
-      if(isFind[j]) continue;
-      int next2 = InitFaces[j];
+  } 
 
-      if(next2 != prev1) continue;
 
-      int prev2;{
-        if (j % 3 == 0)
-          prev2 = InitFaces[j + 2];
-        else
-          prev2 = InitFaces[j - 1];
-      }
 
-      if (next1 == prev2 && next2 == prev1 ){
-        isFind[i] = true;
-        isFind[j] = true;
-        //                cout<<i<<"   "<<j<<"   \n";
-        HalfEdges[i].oppo_ = j;
-        HalfEdges[j].oppo_ = i;
-        break;
-      }
-    }
-  }
+
+
+  
+
+  // vector<bool>isFind(num);
+  // for(size_t i=0;i<num;++i){
+  //   if(isFind[i]) continue;
+  //   int next1=InitFaces[i];
+  //   int prev1;{
+  //     if (i % 3 == 0)
+  //       prev1 = InitFaces[i + 2];
+  //     else
+  //       prev1 = InitFaces[i - 1];
+  //   }
+  //   for(size_t j=i+1;j<num;j++){
+  //     if(isFind[j]) continue;
+  //     int next2 = InitFaces[j];
+
+  //     if(next2 != prev1) continue;
+
+  //     int prev2;{
+  //       if (j % 3 == 0)
+  //         prev2 = InitFaces[j + 2];
+  //       else
+  //         prev2 = InitFaces[j - 1];
+  //     }
+
+  //     if (next1 == prev2 && next2 == prev1 ){
+  //       isFind[i] = true;
+  //       isFind[j] = true;
+  //       //                cout<<i<<"   "<<j<<"   \n";
+  //       HalfEdges[i].oppo_ = j;
+  //       HalfEdges[j].oppo_ = i;
+  //       break;
+  //     }
+  //   }
+  // }
+
+  
 
 
   cout<<"the data has been converted to halfedge constructure.\n";
