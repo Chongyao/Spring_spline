@@ -156,6 +156,8 @@ void halfedge::ConstructHalfedge(){
   }
 
   
+
+
   //find the opposite by map
   
   for(auto it = pairs.begin();it != pairs.end(); it++){
@@ -167,47 +169,6 @@ void halfedge::ConstructHalfedge(){
     }
   } 
 
-
-
-
-
-  
-
-  // vector<bool>isFind(num);
-  // for(size_t i=0;i<num;++i){
-  //   if(isFind[i]) continue;
-  //   int next1=InitFaces[i];
-  //   int prev1;{
-  //     if (i % 3 == 0)
-  //       prev1 = InitFaces[i + 2];
-  //     else
-  //       prev1 = InitFaces[i - 1];
-  //   }
-  //   for(size_t j=i+1;j<num;j++){
-  //     if(isFind[j]) continue;
-  //     int next2 = InitFaces[j];
-
-  //     if(next2 != prev1) continue;
-
-  //     int prev2;{
-  //       if (j % 3 == 0)
-  //         prev2 = InitFaces[j + 2];
-  //       else
-  //         prev2 = InitFaces[j - 1];
-  //     }
-
-  //     if (next1 == prev2 && next2 == prev1 ){
-  //       isFind[i] = true;
-  //       isFind[j] = true;
-  //       //                cout<<i<<"   "<<j<<"   \n";
-  //       HalfEdges[i].oppo_ = j;
-  //       HalfEdges[j].oppo_ = i;
-  //       break;
-  //     }
-  //   }
-  // }
-
-  
 
 
   cout<<"the data has been converted to halfedge constructure.\n";
