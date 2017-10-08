@@ -174,7 +174,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
 
    // if (edge_id == 1406){
    //   size_t id = edge_id;
-   //   do{
+       //   do{
 
    //     cout << "the edge is " << id <<" is exist "<< mesh_init. HalfEdges[id].is_exist<< " the vertex is "<< mesh_init. HalfEdges [id]. vertex_ << "\n";
    //   id = mesh_init. HalfEdges [id].next_;

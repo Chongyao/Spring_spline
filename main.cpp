@@ -15,11 +15,14 @@ int main(int argc,char* argv[])
 
     
     
-    data.ReadData(Input);
+    if( data.ReadData(Input) != -1){
     data.ConstructHalfedge();
     simplify_mesh data_simp(data);
     data_simp. Simp_shorstest(itertime);
     data_simp.mesh_init. halfedge_to_obj(Output);
+    }
+    else
+      cout << "read error";
     return 0;
 }
 

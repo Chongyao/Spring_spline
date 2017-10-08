@@ -12,13 +12,13 @@ bool operator<(const H_edge &a, const H_edge &b)
   return a.length<b.length;
 }
 
-bool operator<(const vertex_pair &a, const vertex_pair &b){
-  if(a.p == b.p)
-    return a.q < b.q;
-  else
-    return a.p < b.p;
+// bool operator<(const vertex_pair &a, const vertex_pair &b){
+//   if(a.first == b.first)
+//     return a.q < b.q;
+//   else
+//     return a.first < b.first;
   
-}
+// }
 halfedge::halfedge()
 {
 }
@@ -118,14 +118,15 @@ void halfedge::ConstructHalfedge(){
   HalfEdges=vector<H_edge> (num);
 
   for(size_t i=0;i<num/3;i++){
+    
     Faces[i].edge_=i*3;
     for(size_t k=i*3;k<(i+1)*3;k++){
       HalfEdges[k].vertex_=InitFaces[k];
 
       vertex_pair v_pair_temp;
-      v_pair_temp.q = InitFaces[k];
+      v_pair_temp.second = InitFaces[k];
       
-      Vertexs[InitFaces[k]].edge_=k;
+      Vertexs[InitFaces[k]-1].edge_=k;
 
       HalfEdges[k].face_=i;
 
@@ -134,7 +135,7 @@ void halfedge::ConstructHalfedge(){
         HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]-1].x-Vertexs[InitFaces[k]-1].x),2)+
                                   pow((Vertexs[InitFaces[k+2]-1].y-Vertexs[InitFaces[k]-1].y),2)+
                                   pow((Vertexs[InitFaces[k+2]-1].z-Vertexs[InitFaces[k]-1].z),2));
-        v_pair_temp.p = InitFaces[k+2];
+        v_pair_temp.first = InitFaces[k+2];
         
       }
       else{
@@ -142,18 +143,20 @@ void halfedge::ConstructHalfedge(){
         HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k-1]-1].x-Vertexs[InitFaces[k]-1].x),2)+
                                  pow((Vertexs[InitFaces[k-1]-1].y-Vertexs[InitFaces[k]-1].y),2)+
                                  pow((Vertexs[InitFaces[k-1]-1].z-Vertexs[InitFaces[k]-1].z),2));
-        v_pair_temp.p = InitFaces[k-1];
+        v_pair_temp.first = InitFaces[k-1];
       }
       if(k==i*3+2)
         HalfEdges[k].next_= k-2;
       else
         HalfEdges[k].next_= k+1;
 
+
       pairs[v_pair_temp] = k;
-    
 
     }
   }
+
+
 
   
 
@@ -161,7 +164,7 @@ void halfedge::ConstructHalfedge(){
   //find the opposite by map
   
   for(auto it = pairs.begin();it != pairs.end(); it++){
-    auto it_oppo = pairs.find({it->first.q, it->first.p});
+    auto it_oppo = pairs.find({it->first.second, it->first.first});
     if(HalfEdges[it->second].oppo_ == -1 && it_oppo != pairs.end()){
       HalfEdges[it->second].oppo_ = it_oppo->second;
       HalfEdges[it_oppo->second].oppo_ = it->second;
