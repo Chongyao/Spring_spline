@@ -1,12 +1,11 @@
-
 #ifndef SIMPLIFYMESH_H
 #define SIMPLIFYMESH_H
 #include"halfedge.h"
 
-struct ident{
-  size_t id;
-  double  value;
-};
+// struct ident{
+//   size_t id;
+//   double  value;
+// };
 
 class simplify_mesh
 {
@@ -18,12 +17,15 @@ class simplify_mesh
   // int main_();
 
  private:
-  std::vector<ident> priority;
+  std::map<size_t,value> priority;
   void make_priority();
-  void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);
   void pop_priority(const size_t &edge_id);
-  int check_manifold( size_t &edge_id,  int &edge_oppo_id);
   void modify_priority(const ident &new_ident);
+
+  
+  void change_topology (const size_t &edge_id, const int &edge_oppo_id, const int &result);
+
+  int check_manifold( size_t &edge_id,  int &edge_oppo_id);
 };
 
 #endif // SIMPLIFYMESH_0

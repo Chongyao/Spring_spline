@@ -20,13 +20,9 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //  string Output = "../data/output/cube_tu_",fix = ".obj";
   for(size_t i = 0; i < iter_times; i++){
 
-     for (size_t j = 0;j < 10; j++){
-       cout<<"edge id is " << priority[j]. id << "  length is " << priority[j]. value <<"\n";
-     }
-     cout<<"\n";
   
     cout << i << " iteration:\n";
-    size_t edge_id = priority[ 0 ]. id;
+    size_t edge_id = priority.
     int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
     
 
@@ -86,7 +82,7 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
     mesh_init. Faces[ face_r_id ]. is_exist = false;
     if( edge_oppo_id != -1) {
     face_r_id = mesh_init. HalfEdges[ edge_oppo_id ]. face_;
-    mesh_init. Faces[ face_r_id ]. is_exist = false;
+    mesh_init. Faces[ oface_r_id ]. is_exist = false;
     }
     cout<<"the face has been deleted.\n";
   }
@@ -147,27 +143,20 @@ void simplify_mesh::change_topology( const size_t &edge_id, const int &edge_oppo
 }
 void simplify_mesh::make_priority(){
   size_t num = mesh_init.HalfEdges.size();
-  priority = vector<ident>(num);
   for (size_t i = 0; i < num; i++){
-    priority[i].id = i;
-    priority[i].value = mesh_init.HalfEdges[i].length;
+    priority[i] = mesh_init.HalfEdges[i]. length;
   }
 
-  make_heap(priority.begin(),priority.end(),greater<ident>());
   
 }
 void simplify_mesh::pop_priority(const size_t &edge_id){
-
-  if (mesh_init. HalfEdges[edge_id]. oppo_ !=-1){
-    pop_heap (priority.begin(), priority.end(),greater<ident>());
-    priority.pop_back();
-
-    pop_heap (priority.begin(), priority.end(),greater<ident>());
-    priority.pop_back();
+  size_t edge_oppo_id = mesh_init. HalfEdges.[edge_id].oppo_;
+  if (edge_oppo_id=-1){
+    priority.erase(edge_id);
+    priority.erase(edge_oppo_id);
   }
   else{
-    pop_heap (priority.begin(), priority.end(),greater<ident>());
-    priority.pop_back();
+    priority.erase(edge_id);
   }
   
 }
@@ -270,11 +259,9 @@ pop:
   }
   return edge_bound_id;
 }
-void simplify_mesh::modify_priority (const ident &new_ident){//You must modify priority before modify the Halfedges vector
-  double length_old = mesh_init. HalfEdges[new_ident.id]. length;
-  //x  for ()
-  
+void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new){//You must modify priority before modify the Halfedges vector
 
+  priority[edge_id] = value_new;
 
 
   
