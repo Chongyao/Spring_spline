@@ -154,6 +154,8 @@ void halfedge::ConstructHalfedge(){
       pairs[v_pair_temp] = k;
 
     }
+
+    cal_Kp(Faces[i]);
   }
 
 
@@ -226,28 +228,40 @@ void halfedge::halfedge_to_obj( const string &outfile){
   cout<<"\nend of writing";  
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+void halfedge::cal_Kp(H_face &face_){
+  vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
+    size_t edge_id = face_.edge_,
+        vertex_id = HalfEdges[edge_id].vertex_;
+    for(size_t i = 0; i < 3; i++){
+      x[i] = Vertexs[vertex_id].x;
+      y[i] = Vertexs[vertex_id].y;
+      z[i] = Vertexs[vertex_id].z;
+    
+      edge_id = HalfEdges[edge_id]. next_;
+      vertex_id = HalfEdges[edge_id]. vertex_;
+    }
+  }
+  double a,b,c,d;{ // calculate a,b,c,d
+    a = (y[3]*(z[1] - z[2]) + y[1]*(z[2] - z[3]) + y[2]*(-z[1] + z[3]))/
+        (x[3]*y[2]*z[1] - x[2]*y[3]*z[1] - x[3]*y[1]*z[2] + x[1]*y[3]*z[2] + x[2]*y[1]*z[3] - x[1]*y[2]*z[3]),
+        b = (x[2]*z[1] - x[3]*z[1] - x[1]*z[2] + x[3]*z[2] + x[1]*z[3] - x[2]*z[3])/
+        (x[3]*y[2]*z[1] - x[2]*y[3]*z[1] - x[3]*y[1]*z[2] + x[1]*y[3]*z[2] + x[2]*y[1]*z[3] - x[1]*y[2]*z[3]),
+        c = (x[3]*(-y[1] + y[2]) + x[2]*(y[1] - y[3]) + x[1]*(-y[2] + y[3]))/
+        (-(x[3]*y[2]*z[1]) + x[2]*y[3]*z[1] + x[3]*y[1]*z[2] - x[1]*y[3]*z[2] - x[2]*y[1]*z[3] + x[1]*y[2]*z[3]);
+    d = sqrt(a*a + b*b + c*c);
+    a = a/d;
+    b = b/d;
+    c = c/d;
+    d = 1/d;
+  }
+  face_. Kp[0] = a*a;
+  face_. Kp[1] = a*b;
+  face_. Kp[2] = a*c;
+  face_. Kp[3] = a*d;
+  face_. Kp[4] = b*b;
+  face_. Kp[5] = b*c;
+  face_. Kp[6] = b*d;
+  face_. Kp[7] = c*c;
+  face_. Kp[8] = c*d;
+}
 

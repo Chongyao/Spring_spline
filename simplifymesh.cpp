@@ -153,7 +153,7 @@ void simplify_mesh::make_priority(){
 }
 void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the halfedges changed 
   size_t edge_oppo_id = mesh_init. HalfEdges[edge_id].oppo_;
-  if (edge_oppo_id=-1){
+  if (edge_oppo_id == -1){
     priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
     priority.erase({edge_oppo_id,mesh_init.HalfEdges[edge_oppo_id].length});
   }

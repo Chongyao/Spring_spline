@@ -22,6 +22,7 @@ struct H_face{
       is_exist(true){};
   size_t edge_;
   bool is_exist;
+  std::vector<double> Kp;
 };
 struct H_edge{ // read_only to others
   H_edge():
@@ -63,6 +64,9 @@ class halfedge
   void ReadFace(std::ifstream &fin, std::string &keyword);
   void ReadAnno(std::ifstream &fin, std::string &keyword);
 
+
+  void cal_Kp(H_face & face_);
+  
   std::string filename;
 };
 #endif // HALFEDGE_H
