@@ -19,6 +19,13 @@ bool operator<(const H_edge &a, const H_edge &b)
 //     return a.first < b.first;
   
 // }
+template<typename T>
+void plus_vector(vector<T> &a, vector<T> &b, vector<T> &result){
+  size_t num = a.size();
+  for(size_t i = 0;i < num; i++){
+    result[i] = a[i] + b[i];
+  }
+}
 halfedge::halfedge()
 {
 }
@@ -155,7 +162,7 @@ void halfedge::ConstructHalfedge(){
 
     }
 
-    cal_Kp(Faces[i]);
+    cal_Kp_face(Faces[i]);
   }
 
 
@@ -228,7 +235,8 @@ void halfedge::halfedge_to_obj( const string &outfile){
   cout<<"\nend of writing";  
 }
 
-void halfedge::cal_Kp(H_face &face_){
+void halfedge::cal_Kp_face(H_face &face_){
+  face_.Kp = vector<double>(8);
   vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
     size_t edge_id = face_.edge_,
         vertex_id = HalfEdges[edge_id].vertex_;
@@ -264,4 +272,23 @@ void halfedge::cal_Kp(H_face &face_){
   face_. Kp[7] = c*c;
   face_. Kp[8] = c*d;
 }
+
+
+
+void halfedge::cal_Kp_vertex(H_vertex &vertex_){
+  size_t edge_id = vertex_. edge_,
+      edge_end_id = vertex_.edge_,
+      face_id = HalfEdges[edge_id]. face_;
+  vertex_. Kp = vector<double> (8);
+  do{
+    plus_vector(vertex_.Kp, Faces[face_id].Kp, vertex_.Kp);
+    edge_id = HalfEdges[edge_id]. next_;
+    edge_id = HalfEdges[edge_id]. oppo_;
+    face_id = HalfEdges[edge_id]. face_;
+  }while(edge_id != edge_end_id);
+
+  
+}
+
+
 

@@ -16,6 +16,7 @@ struct H_vertex{
   double z;
   size_t edge_;
   bool is_exist;
+  std::vector<double> Kp;
 };
 struct H_face{
   H_face():
@@ -65,8 +66,9 @@ class halfedge
   void ReadAnno(std::ifstream &fin, std::string &keyword);
 
 
-  void cal_Kp(H_face & face_);
-  
+  void cal_Kp_face(H_face & face_);
+  void cal_Kp_vertex(H_vertex &vertex_);
+
   std::string filename;
 };
 #endif // HALFEDGE_H
