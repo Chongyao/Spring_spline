@@ -54,7 +54,7 @@ class halfedge
   //core structure
   std::vector<H_edge> HalfEdges;
   std::vector<H_face> Faces;
-p  std::vector<H_vertex> Vertexs;
+  std::vector<H_vertex> Vertexs;
 
   //get information
 
@@ -65,11 +65,12 @@ p  std::vector<H_vertex> Vertexs;
   void cal_Kp_face(H_face & face_);
   void cal_Kp_vertex(H_vertex &vertex_);
 
- psrivate:
+  template<typename T>
+  void plus_vector(std::vector<T> &a, std::vector<T> &b,std::vector<T> &result);
+ private:
   void ReadVertex(std::ifstream &fin, std::string &keyword);
   void ReadFace(std::ifstream &fin, std::string &keyword);
   void ReadAnno(std::ifstream &fin, std::string &keyword);
-
 
 
   std::string filename;

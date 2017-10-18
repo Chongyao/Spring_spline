@@ -1,4 +1,4 @@
-o#include "halfedge.h"
+#include "halfedge.h"
 #include<fstream>
 #include<sstream>
 #include<cmath>
@@ -20,7 +20,7 @@ bool operator<(const H_edge &a, const H_edge &b)
   
 // }
 template<typename T>
-void plus_vector(vector<T> &a, vector<T> &b, vector<T> &result){
+void halfedge::plus_vector(vector<T> &a, vector<T> &b, vector<T> &result){
   size_t num = a.size();
   for(size_t i = 0;i < num; i++){
     result[i] = a[i] + b[i];

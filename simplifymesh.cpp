@@ -24,9 +24,11 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   for(size_t i = 0; i < iter_times; i++){
     cout << i << " iteration:\n";
     
-    size_t edge_id ;{
+    size_t edge_id ;
+    vector<double> new_V;{
       auto iter = priority.upper_bound(zero_);
-      edge_id = iter->id;
+      edge_id = iter->first.id;
+      new_V = iter->second;
     }
     int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
     
@@ -43,7 +45,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
      
     //change the topology
     cout << "the edge to be collapsed is " << edge_id <<"\n";
-    change_topology(edge_id,edge_oppo_id,result);
+    change_topology(new_V,edge_id,edge_oppo_id,result);
   
     // //output
     // stringstream temp;
@@ -60,18 +62,19 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   }
 }
 
-void simplify_mesh::change_topology( cosnt vector<double> &new_V, const size_t &edge_id, const int &edge_oppo_id, const int &result){
+void simplify_mesh::change_topology( const vector<double> &new_V, const size_t &edge_id, const int &edge_oppo_id, const int &result){
   size_t  edge_r_id = edge_id;{//delete the edges
 
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
       if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
+        size_t edge_c_id;
         edge_c_id = mesh_init.HalfEdges[edge_r_id].oppo_;
         edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
         edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
         edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-        mesh_init.Vertexs[vertex_id].edge_ = edge_c;
+        mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
       }
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_id != edge_r_id);
@@ -105,9 +108,9 @@ void simplify_mesh::change_topology( cosnt vector<double> &new_V, const size_t &
 
  
     const size_t vertex_ur_id = mesh_init.HalfEdges[ edge_id]. vertex_; { //change the vertex
-    mesh_init.Vertexs[vertex_ur_id].x = V[0];
-    mesh_init.Vertexs[vertex_ur_id].y = V[1];
-    mesh_init.Vertexs[vertex_ur_id].z = V[2];
+    mesh_init.Vertexs[vertex_ur_id].x = new_V[0];
+    mesh_init.Vertexs[vertex_ur_id].y = new_V[1];
+    mesh_init.Vertexs[vertex_ur_id].z = new_V[2];
     
     size_t edge_change_id, edge_end_id;
     if (result == -2){
@@ -135,7 +138,7 @@ void simplify_mesh::change_topology( cosnt vector<double> &new_V, const size_t &
       //       pow((mesh_init.Vertexs[vertex_ur_id-1].z-mesh_init.Vertexs[vertex_pre_id-1].z),2));
       //   modify_priority(edge_change_id,length);
       //   mesh_init. HalfEdges [edge_change_id]. length = length;
-N
+
       // }
 
       edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
@@ -180,7 +183,7 @@ N
     }while(edge_c_id != edge_end_id);
 
   }
-n
+
   //calculate error and change the priority
   {
     size_t edge_c_id = mesh_init.Vertexs[vertex_ur_id].edge_;
@@ -224,7 +227,7 @@ void simplify_mesh::make_priority(){
   for (size_t i = 0; i < num; i++){
     double value;
     vector<double> V(4);
-    cal_error(i,value,V)
+    cal_error(i,value,V);
     ident A = {i,value};
     mesh_init.HalfEdges[i]. length = value;
     priority.insert({A,V});
@@ -246,7 +249,7 @@ void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the halfedg
 int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
   int edge_bound_id=-2;
   bool is_cllap = true;
-p
+
   if(!mesh_init. HalfEdges [edge_id].is_exist) {
     is_cllap = false;
     goto pop;
@@ -324,33 +327,33 @@ pop:
     pop_priority(edge_id);
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
-    edge_id = iter->id;
+    edge_id = iter->first.id;
     edge_oppo_id = mesh_init. HalfEdges [edge_id]. oppo_;
   }
   return edge_bound_id;
 }
-void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new const vector<double> &V){//You must modify priority before modify the Halfedges vector
+void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new ,const vector<double> &V){//You must modify priority before modify the Halfedges vector
   pop_priority(edge_id);
-  ident temp_ = {edge_id,mesh_init.Halfedges[edge_id].length}; 
+  ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length}; 
   priority.insert({temp_,V});
  
 }
 void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<double>V){
     vector<double> Q(10);{//calculate Q
-    size_t vertex_id_1 = mesh_init.HalfEdges[i].vertex_,
-        edge_id = mesh_init.HalfEdges[i].prev_,
+    size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
+        edge_id = mesh_init.HalfEdges[edge_id].prev_,
         vertex_id_2 = mesh_init.HalfEdges[edge_id]. prev_;
-    plus_vector(mesh_init. Vertexs[vertex_id_1]. Kp, mesh_init. Vertexs[vertex_id_2], Q);
+    mesh_init.plus_vector(mesh_init. Vertexs[vertex_id_1]. Kp, mesh_init. Vertexs[vertex_id_2].Kp, Q);
     }
 
 
     //vector<double>(4);
     {// get the V
-    double delt  = -(pow([9][3],2)*Q[5]) + 2*Q[2]*Q[3]*Q[6] - Q[1]*pow(Q[6],2) - pow(Q[2],2)*Q[8] + Q[1]*Q[5]*Q[8];
+    double delt  = -(pow(Q[3],2)*Q[5]) + 2*Q[2]*Q[3]*Q[6] - Q[1]*pow(Q[6],2) - pow(Q[2],2)*Q[8] + Q[1]*Q[5]*Q[8];
       if( delt > 1e-18){
-        V[0] = (-(Q[3]*Q[6]*Q[7]) + Q[2]*Q[7]*Q[8] + Q[4]*(pow(Q[6],2) - Q[5]*Q[8]) + Q[3]*Q[5]*Q[9] - Q[2]*Q[6]*Q[9])/w;
-        V[1] = (pow(Q[3],2)*Q[7] + Q[2]*Q[4]*Q[8] - Q[1]*Q[7]*Q[8] + Q[1]*Q[6]*Q[9] - Q[3]*(Q[4]*Q[6] + Q[2]*Q[9]))/w;
-        V[2] = (Q[3]*Q[4]*Q[5] - Q[2]*Q[4]*Q[6] - Q[2]*Q[3]*Q[7] + Q[1]*Q[6]*Q[7] + pow(Q[2],2)*Q[9] - Q[1]*Q[5]*Q[9])/w;
+        V[0] = (-(Q[3]*Q[6]*Q[7]) + Q[2]*Q[7]*Q[8] + Q[4]*(pow(Q[6],2) - Q[5]*Q[8]) + Q[3]*Q[5]*Q[9] - Q[2]*Q[6]*Q[9])/delt;
+        V[1] = (pow(Q[3],2)*Q[7] + Q[2]*Q[4]*Q[8] - Q[1]*Q[7]*Q[8] + Q[1]*Q[6]*Q[9] - Q[3]*(Q[4]*Q[6] + Q[2]*Q[9]))/delt;
+        V[2] = (Q[3]*Q[4]*Q[5] - Q[2]*Q[4]*Q[6] - Q[2]*Q[3]*Q[7] + Q[1]*Q[6]*Q[7] + pow(Q[2],2)*Q[9] - Q[1]*Q[5]*Q[9])/delt;
         V[3] = 1;
       }
       else{
@@ -362,7 +365,7 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<doubl
     //    double error;{//calcylate the error
       vector<double> temp_(4);
       MxV(Q,V,4,4,temp_);
-      value = V*temp_;
+      error = V*temp_;
     
   
 }
