@@ -1,4 +1,4 @@
-#include "halfedge.h"
+o#include "halfedge.h"
 #include<fstream>
 #include<sstream>
 #include<cmath>
@@ -139,17 +139,11 @@ void halfedge::ConstructHalfedge(){
 
       if(k==i*3){
         HalfEdges[k].prev_=k+2;
-        HalfEdges[k].length= sqrt(pow((Vertexs[InitFaces[k+2]-1].x-Vertexs[InitFaces[k]-1].x),2)+
-                                  pow((Vertexs[InitFaces[k+2]-1].y-Vertexs[InitFaces[k]-1].y),2)+
-                                  pow((Vertexs[InitFaces[k+2]-1].z-Vertexs[InitFaces[k]-1].z),2));
         v_pair_temp.first = InitFaces[k+2];
         
       }
       else{
         HalfEdges[k].prev_=k-1;
-        HalfEdges[k].length=sqrt(pow((Vertexs[InitFaces[k-1]-1].x-Vertexs[InitFaces[k]-1].x),2)+
-                                 pow((Vertexs[InitFaces[k-1]-1].y-Vertexs[InitFaces[k]-1].y),2)+
-                                 pow((Vertexs[InitFaces[k-1]-1].z-Vertexs[InitFaces[k]-1].z),2));
         v_pair_temp.first = InitFaces[k-1];
       }
       if(k==i*3+2)
@@ -159,13 +153,13 @@ void halfedge::ConstructHalfedge(){
 
 
       pairs[v_pair_temp] = k;
-
-    }
+      
+   }
 
     cal_Kp_face(Faces[i]);
   }
 
-
+  
 
   
 
@@ -236,7 +230,7 @@ void halfedge::halfedge_to_obj( const string &outfile){
 }
 
 void halfedge::cal_Kp_face(H_face &face_){
-  face_.Kp = vector<double>(8);
+  face_.Kp = vector<double>(10);
   vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
     size_t edge_id = face_.edge_,
         vertex_id = HalfEdges[edge_id].vertex_;
@@ -271,6 +265,7 @@ void halfedge::cal_Kp_face(H_face &face_){
   face_. Kp[6] = b*d;
   face_. Kp[7] = c*c;
   face_. Kp[8] = c*d;
+  face_. Kp[9] = d*d;
 }
 
 
@@ -279,7 +274,7 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
       face_id = HalfEdges[edge_id]. face_;
-  vertex_. Kp = vector<double> (8);
+  vertex_. Kp = vector<double> (10);
   do{
     plus_vector(vertex_.Kp, Faces[face_id].Kp, vertex_.Kp);
     edge_id = HalfEdges[edge_id]. next_;
@@ -289,6 +284,3 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
 
   
 }
-
-
-
