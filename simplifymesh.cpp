@@ -20,7 +20,6 @@ bool operator <(const ident &a,const ident &b){
 void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   //find the shortest edge
   make_priority();
-  //  string Output = "../data/output/cube_tu_",fix = ".obj";
   for(size_t i = 0; i < iter_times; i++){
     cout << i << " iteration:\n";
     
@@ -339,21 +338,24 @@ void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_
  
 }
 void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<double>V){
-    vector<double> Q(10);{//calculate Q
+  vector<double> Q(10);{//calculate Q
     size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
-        edge_id = mesh_init.HalfEdges[edge_id].prev_,
-        vertex_id_2 = mesh_init.HalfEdges[edge_id]. prev_;
+        edge_id_prev = mesh_init.HalfEdges[edge_id].prev_,
+        vertex_id_2 = mesh_init.HalfEdges[edge_id_prev].vertex_;
     mesh_init.plus_vector(mesh_init. Vertexs[vertex_id_1]. Kp, mesh_init. Vertexs[vertex_id_2].Kp, Q);
     }
 
 
     //vector<double>(4);
     {// get the V
-    double delt  = -(pow(Q[3],2)*Q[5]) + 2*Q[2]*Q[3]*Q[6] - Q[1]*pow(Q[6],2) - pow(Q[2],2)*Q[8] + Q[1]*Q[5]*Q[8];
+    double delt  = -(pow(Q[2],2)*Q[4]) + 2*Q[1]*Q[2]*Q[5] - Q[0]*pow(Q[5],2) - pow(Q[1],2)*Q[7] + Q[0]*Q[4]*Q[7];
+
+    cout << "delt is " << delt <<"\n";
+   
       if( delt > 1e-18){
-        V[0] = (-(Q[3]*Q[6]*Q[7]) + Q[2]*Q[7]*Q[8] + Q[4]*(pow(Q[6],2) - Q[5]*Q[8]) + Q[3]*Q[5]*Q[9] - Q[2]*Q[6]*Q[9])/delt;
-        V[1] = (pow(Q[3],2)*Q[7] + Q[2]*Q[4]*Q[8] - Q[1]*Q[7]*Q[8] + Q[1]*Q[6]*Q[9] - Q[3]*(Q[4]*Q[6] + Q[2]*Q[9]))/delt;
-        V[2] = (Q[3]*Q[4]*Q[5] - Q[2]*Q[4]*Q[6] - Q[2]*Q[3]*Q[7] + Q[1]*Q[6]*Q[7] + pow(Q[2],2)*Q[9] - Q[1]*Q[5]*Q[9])/delt;
+        V[0] = (-(Q[2]*Q[5]*Q[6]) + Q[1]*Q[6]*Q[7] + Q[3]*(pow(Q[5],2) - Q[4]*Q[7]) + Q[2]*Q[4]*Q[8] - Q[1]*Q[5]*Q[8])/delt;
+        V[1] = (pow(Q[2],2)*Q[6] + Q[1]*Q[3]*Q[7] - Q[0]*Q[6]*Q[7] + Q[0]*Q[5]*Q[8] - Q[2]*(Q[3]*Q[5] + Q[1]*Q[8]))/delt;
+        V[2] = (Q[2]*Q[3]*Q[4] - Q[1]*Q[3]*Q[5] - Q[1]*Q[2]*Q[6] + Q[0]*Q[5]*Q[6] + pow(Q[1],2)*Q[8] - Q[0]*Q[4]*Q[8])/delt;
         V[3] = 1;
       }
       else{
@@ -362,10 +364,12 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<doubl
       
     }
 
+
     //    double error;{//calcylate the error
       vector<double> temp_(4);
       MxV(Q,V,4,4,temp_);
       error = V*temp_;
+
     
   
 }

@@ -156,7 +156,6 @@ void halfedge::ConstructHalfedge(){
       
    }
 
-    cal_Kp_face(Faces[i]);
   }
 
   
@@ -175,7 +174,23 @@ void halfedge::ConstructHalfedge(){
     }
   } 
 
+  //cal the faces kp
+  size_t num_faces = Faces.size();
+  for(size_t i = 0; i < num_faces; i++){
+    cal_Kp_face(Faces[i]);
+  }
+  
 
+  //cal the vertexs Kp
+
+  
+    size_t num_vertexs = Vertexs.size();
+    for (size_t i = 0; i < num_vertexs; i++){
+      cal_Kp_vertex(Vertexs[i]);
+    }
+    cout << "kP of vertexs is calculated.\n";    
+  
+  
 
   cout<<"the data has been converted to halfedge constructure.\n";
 }
@@ -244,12 +259,12 @@ void halfedge::cal_Kp_face(H_face &face_){
     }
   }
   double a,b,c,d;{ // calculate a,b,c,d
-    a = (y[3]*(z[1] - z[2]) + y[1]*(z[2] - z[3]) + y[2]*(-z[1] + z[3]))/
-        (x[3]*y[2]*z[1] - x[2]*y[3]*z[1] - x[3]*y[1]*z[2] + x[1]*y[3]*z[2] + x[2]*y[1]*z[3] - x[1]*y[2]*z[3]),
-        b = (x[2]*z[1] - x[3]*z[1] - x[1]*z[2] + x[3]*z[2] + x[1]*z[3] - x[2]*z[3])/
-        (x[3]*y[2]*z[1] - x[2]*y[3]*z[1] - x[3]*y[1]*z[2] + x[1]*y[3]*z[2] + x[2]*y[1]*z[3] - x[1]*y[2]*z[3]),
-        c = (x[3]*(-y[1] + y[2]) + x[2]*(y[1] - y[3]) + x[1]*(-y[2] + y[3]))/
-        (-(x[3]*y[2]*z[1]) + x[2]*y[3]*z[1] + x[3]*y[1]*z[2] - x[1]*y[3]*z[2] - x[2]*y[1]*z[3] + x[1]*y[2]*z[3]);
+    a = (y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]))/
+        (x[2]*y[1]*z[0] - x[1]*y[2]*z[0] - x[2]*y[0]*z[1] + x[0]*y[2]*z[1] + x[1]*y[0]*z[2] - x[0]*y[1]*z[2]),
+        b = (x[1]*z[0] - x[2]*z[0] - x[0]*z[1] + x[2]*z[1] + x[0]*z[2] - x[1]*z[2])/
+        (x[2]*y[1]*z[0] - x[1]*y[2]*z[0] - x[2]*y[0]*z[1] + x[0]*y[2]*z[1] + x[1]*y[0]*z[2] - x[0]*y[1]*z[2]),
+        c = (x[2]*(-y[0] + y[1]) + x[1]*(y[0] - y[2]) + x[0]*(-y[1] + y[2]))/
+        (-(x[2]*y[1]*z[0]) + x[1]*y[2]*z[0] + x[2]*y[0]*z[1] - x[0]*y[2]*z[1] - x[1]*y[0]*z[2] + x[0]*y[1]*z[2]);
     d = sqrt(a*a + b*b + c*c);
     a = a/d;
     b = b/d;
