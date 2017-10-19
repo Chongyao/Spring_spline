@@ -128,12 +128,12 @@ void halfedge::ConstructHalfedge(){
     
     Faces[i].edge_=i*3;
     for(size_t k=i*3;k<(i+1)*3;k++){
-      HalfEdges[k].vertex_=InitFaces[k];
+      HalfEdges[k].vertex_=InitFaces[k]-1;
 
       vertex_pair v_pair_temp;
       v_pair_temp.second = InitFaces[k];
       
-      Vertexs[InitFaces[k]-1].edge_=k;
+      Vertexs[InitFaces[k]].edge_=k;
 
       HalfEdges[k].face_=i;
 
@@ -259,18 +259,16 @@ void halfedge::cal_Kp_face(H_face &face_){
     }
   }
   double a,b,c,d;{ // calculate a,b,c,d
-    a = (y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]))/
-        (x[2]*y[1]*z[0] - x[1]*y[2]*z[0] - x[2]*y[0]*z[1] + x[0]*y[2]*z[1] + x[1]*y[0]*z[2] - x[0]*y[1]*z[2]),
-        b = (x[1]*z[0] - x[2]*z[0] - x[0]*z[1] + x[2]*z[1] + x[0]*z[2] - x[1]*z[2])/
-        (x[2]*y[1]*z[0] - x[1]*y[2]*z[0] - x[2]*y[0]*z[1] + x[0]*y[2]*z[1] + x[1]*y[0]*z[2] - x[0]*y[1]*z[2]),
-        c = (x[2]*(-y[0] + y[1]) + x[1]*(y[0] - y[2]) + x[0]*(-y[1] + y[2]))/
-        (-(x[2]*y[1]*z[0]) + x[1]*y[2]*z[0] + x[2]*y[0]*z[1] - x[0]*y[2]*z[1] - x[1]*y[0]*z[2] + x[0]*y[1]*z[2]);
+    a = y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]);
+    b = x[1]*z[0] - x[2]*z[0] - x[0]*z[1] + x[2]*z[1] + x[0]*z[2] - x[1]*z[2];
+    c = x[2]*(-y[0] + y[1]) + x[1]*(y[0] - y[2]) + x[0]*(-y[1] + y[2]);
     d = sqrt(a*a + b*b + c*c);
     a = a/d;
     b = b/d;
     c = c/d;
-    d = 1/d;
-  }
+    d = -(a*x[0]+ b*y[0] + c*z[0]);
+    }
+  
   face_. Kp[0] = a*a;
   face_. Kp[1] = a*b;
   face_. Kp[2] = a*c;

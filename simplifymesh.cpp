@@ -46,15 +46,6 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
     cout << "the edge to be collapsed is " << edge_id <<"\n";
     change_topology(new_V,edge_id,edge_oppo_id,result);
   
-    // //output
-    // stringstream temp;
-    // string temp_;
-    // temp<<i;
-    // temp>>temp_;
-    // Output. append(temp_);
-    // Output. append(fix);
-    // cout << Output <<"\n";
-    // mesh_init. halfedge_to_obj(Output);
     
     cout<<"\n\n";
   
@@ -87,7 +78,7 @@ void simplify_mesh::change_topology( const vector<double> &new_V, const size_t &
   }
   
   size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;{    //delete the vertex
-    mesh_init.Vertexs [ vertex_r_id-1 ].is_exist = false;
+    mesh_init.Vertexs [ vertex_r_id ].is_exist = false;
 
     cout<<"the vertex " << vertex_r_id <<" has been deleted.\n";
 
@@ -223,6 +214,7 @@ void simplify_mesh::change_topology( const vector<double> &new_V, const size_t &
 }
 void simplify_mesh::make_priority(){
   size_t num = mesh_init.HalfEdges.size();
+  cout << "num of halfedges is " << num << ".\n";
   for (size_t i = 0; i < num; i++){
     double value;
     vector<double> V(4);
@@ -350,7 +342,7 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<doubl
     {// get the V
     double delt  = -(pow(Q[2],2)*Q[4]) + 2*Q[1]*Q[2]*Q[5] - Q[0]*pow(Q[5],2) - pow(Q[1],2)*Q[7] + Q[0]*Q[4]*Q[7];
 
-    cout << "delt is " << delt <<"\n";
+    cout << "edge id is " << edge_id << " .\ndelt is " << delt <<"\n";
    
       if( delt > 1e-18){
         V[0] = (-(Q[2]*Q[5]*Q[6]) + Q[1]*Q[6]*Q[7] + Q[3]*(pow(Q[5],2) - Q[4]*Q[7]) + Q[2]*Q[4]*Q[8] - Q[1]*Q[5]*Q[8])/delt;
