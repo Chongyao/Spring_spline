@@ -132,19 +132,19 @@ void halfedge::ConstructHalfedge(){
 
       vertex_pair v_pair_temp;
       v_pair_temp.second = InitFaces[k];
-      
-      Vertexs[InitFaces[k]].edge_=k;
+     
+     Vertexs[InitFaces[k]-1].edge_=k;
 
       HalfEdges[k].face_=i;
 
       if(k==i*3){
         HalfEdges[k].prev_=k+2;
-        v_pair_temp.first = InitFaces[k+2];
+        v_pair_temp.first = InitFaces[k+2]-1;
         
       }
       else{
         HalfEdges[k].prev_=k-1;
-        v_pair_temp.first = InitFaces[k-1];
+        v_pair_temp.first = InitFaces[k-1]-1;
       }
       if(k==i*3+2)
         HalfEdges[k].next_= k-2;
