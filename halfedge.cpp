@@ -131,7 +131,7 @@ void halfedge::ConstructHalfedge(){
       HalfEdges[k].vertex_=InitFaces[k]-1;
 
       vertex_pair v_pair_temp;
-      v_pair_temp.second = InitFaces[k];
+      v_pair_temp.second = InitFaces[k]-1;
      
      Vertexs[InitFaces[k]-1].edge_=k;
 
