@@ -29,6 +29,16 @@ class simplify_mesh
   int check_manifold( size_t &edge_id,  int &edge_oppo_id);
 
   void cal_error(const size_t &edge_id, double &error, std::vector<double> V);
+
+
+  void delete_halfedges(const size_t &edge_id, const size_t &edge_oppo_id);
+  void delete_vertex(const size_t &edge_oppo_id);
+  void delete_faces(const size_t &edge_id, const size_t &edge_oppo_id);
+  size_t change_vertex(const size_t &edge_id, const size_t &edge_oppo_id, const vector<double> &new_V, const int &result);
+  void change_oppoedge(const size_t &edge_id, const size_t &edge_oppo_id);
+  void change_face_kp(const size_t &vertex_ur_id);
+  void change_vertex_kp(const size_t &vertex_ur_id);
+  void change_priority(const size_t &vertex_ur_id, )
   
 };
 
