@@ -28,7 +28,7 @@ class simplify_mesh
 
   int check_manifold( size_t &edge_id,  int &edge_oppo_id);
 
-  void cal_error(const size_t &edge_id, double &error, std::vector<double> V);
+  void cal_error(const size_t &edge_id, double &error, std::vector<double> &V);
 
 
   void delete_halfedges(const size_t &edge_id, const size_t &edge_oppo_id);

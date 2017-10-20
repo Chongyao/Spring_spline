@@ -350,7 +350,7 @@ void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_
   priority.insert({temp_,V});
  
 }
-void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<double>V){
+void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<double>&V){
   vector<double> Q(10);{//calculate Q
     size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
         edge_id_prev = mesh_init.HalfEdges[edge_id].prev_,
