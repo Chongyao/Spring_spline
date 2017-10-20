@@ -26,7 +26,7 @@ class simplify_mesh
   
   void change_topology (const std::vector<double> &new_V, const size_t &edge_id, const int &edge_oppo_id, const int &result);
 
-  int check_manifold( size_t &edge_id,  int &edge_oppo_id);
+  int check_manifold( size_t &edge_id,  int &edge_oppo_id, std::vector<double>&new_V);
 
   void cal_error(const size_t &edge_id, double &error, std::vector<double> &V);
 

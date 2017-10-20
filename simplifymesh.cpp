@@ -40,7 +40,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
     //check the manifold
     int result;
     do{
-      result = check_manifold(edge_id, edge_oppo_id);
+      result = check_manifold(edge_id, edge_oppo_id,new_V);
       cout << "result of check of manifold is "<< result <<"\n";
     }while(result == -1);
 
@@ -249,7 +249,7 @@ void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the halfedg
   }
   
 }
-int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id){
+int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, vector<double>&new_V){
   int edge_bound_id=-2;
   bool is_cllap = true;
 
@@ -331,6 +331,7 @@ pop:
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
     edge_id = iter->first.id;
+    new_V = iter->second;
     edge_oppo_id = mesh_init. HalfEdges [edge_id]. oppo_;
   }
   return edge_bound_id;
