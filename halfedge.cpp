@@ -214,7 +214,7 @@ void halfedge::halfedge_to_obj( const string &outfile){
     for (size_t i = 0;i < num_vertex; i++){
       if (Vertexs[i]. is_exist){
         fout<<"v "<<Vertexs[i]. x<<" "<<Vertexs[i]. y<<" "<<Vertexs[i]. z<<"\n";
-        turn[i+1] = count;
+        turn[i] = count;
         ++count;
       }
       // else {
