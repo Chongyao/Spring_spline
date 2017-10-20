@@ -60,8 +60,8 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
 void simplify_mesh::change_topology( const vector<double> &new_V, const size_t &edge_id, const int &edge_oppo_id, const int &result){
   delete_halfedges(edge_id,edge_oppo_id);
   delete_vertex(edge_oppo_id);
-  delete_face(edge_id,edge_oppo_id);
-  vertex_ur_id = change_vertex(edge_id, edge_oppo_id, new_V, result);
+  delete_faces(edge_id,edge_oppo_id);
+  size_t vertex_ur_id = change_vertex(edge_id, edge_oppo_id, new_V, result);
   change_oppoedge(edge_id,edge_oppo_id);
   change_face_kp (vertex_ur_id);
   change_vertex_kp(vertex_ur_id);
@@ -137,13 +137,14 @@ size_t simplify_mesh::change_vertex(const size_t &edge_id, const size_t &edge_op
     else {
       edge_change_id = result;
       edge_end_id = -1;
-    }pp
+    }
     do{
       mesh_init. HalfEdges[ edge_change_id]. vertex_ = vertex_ur_id;
       edge_change_id = mesh_init. HalfEdges [edge_change_id]. next_;
       edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
     }while ( edge_change_id != edge_end_id);
     cout << "vertex has been changed.\n";
+    return vertex_ur_id;
 }
 void simplify_mesh::change_oppoedge(const size_t &edge_id, const size_t &edge_oppo_id) {  
   size_t edge_oppo_ur = mesh_init. HalfEdges [edge_id]. next_;

@@ -34,11 +34,11 @@ class simplify_mesh
   void delete_halfedges(const size_t &edge_id, const size_t &edge_oppo_id);
   void delete_vertex(const size_t &edge_oppo_id);
   void delete_faces(const size_t &edge_id, const size_t &edge_oppo_id);
-  size_t change_vertex(const size_t &edge_id, const size_t &edge_oppo_id, const vector<double> &new_V, const int &result);
+  size_t change_vertex(const size_t &edge_id, const size_t &edge_oppo_id, const std::vector<double> &new_V, const int &result);
   void change_oppoedge(const size_t &edge_id, const size_t &edge_oppo_id);
   void change_face_kp(const size_t &vertex_ur_id);
   void change_vertex_kp(const size_t &vertex_ur_id);
-  void change_priority(const size_t &vertex_ur_id, )
+  void change_priority(const size_t &vertex_ur_id);
   
 };
 
