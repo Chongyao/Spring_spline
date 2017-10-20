@@ -77,6 +77,15 @@ void simplify_mesh::change_topology( const vector<double> &new_V, const size_t &
     edge_r_id = edge_oppo_id;
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
+      size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
+      if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
+        size_t edge_c_id;
+        edge_c_id = mesh_init.HalfEdges[edge_r_id].oppo_;
+        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
+        edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
+        mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+      }
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_oppo_id != edge_r_id);
     cout <<"the edges have been deleted.\n";
