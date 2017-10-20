@@ -233,15 +233,6 @@ void simplify_mesh::make_priority(){
     ident A = {i,value};
     mesh_init.HalfEdges[i]. length = value;
     priority.insert({A,V});
-  {
-     
-    size_t num_prio = priority.size();
-    cout << "edge id is " << i <<" num of priority is " << num_prio <<"\n";
-    for (auto it = priority.begin();it != priority.end();it++){
-      cout << "id is " << it->first.id <<" value is " << it->first.value <<"\n";
-    }
-    cout << "\n\n";
-  }
     
   }
 
