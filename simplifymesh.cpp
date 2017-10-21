@@ -352,20 +352,20 @@ void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_
  
 }
 void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<double>&V){
-  vector<double> Q(10);{//calculate Q
+  vector<double> Q(10);//calculate Q
     size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
         edge_id_prev = mesh_init.HalfEdges[edge_id].prev_,
         vertex_id_2 = mesh_init.HalfEdges[edge_id_prev].vertex_;
     mesh_init.plus_vector(mesh_init. Vertexs[vertex_id_1]. Kp, mesh_init. Vertexs[vertex_id_2].Kp, Q);
-    }
+    
 
 
     //vector<double>(4);
-    {// get the V
+    // get the V
     double delt  = -(pow(Q[2],2)*Q[4]) + 2*Q[1]*Q[2]*Q[5] - Q[0]*pow(Q[5],2) - pow(Q[1],2)*Q[7] + Q[0]*Q[4]*Q[7];
 
    
-      if( delt > 1e-18){
+      if( delt > 0.001){
         V[0] = (-(Q[2]*Q[5]*Q[6]) + Q[1]*Q[6]*Q[7] + Q[3]*(pow(Q[5],2) - Q[4]*Q[7]) + Q[2]*Q[4]*Q[8] - Q[1]*Q[5]*Q[8])/delt;
         V[1] = (pow(Q[2],2)*Q[6] + Q[1]*Q[3]*Q[7] - Q[0]*Q[6]*Q[7] + Q[0]*Q[5]*Q[8] - Q[2]*(Q[3]*Q[5] + Q[1]*Q[8]))/delt;
         V[2] = (Q[2]*Q[3]*Q[4] - Q[1]*Q[3]*Q[5] - Q[1]*Q[2]*Q[6] + Q[0]*Q[5]*Q[6] + pow(Q[1],2)*Q[8] - Q[0]*Q[4]*Q[8])/delt;
@@ -374,13 +374,79 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, vector<doubl
       else{
         cout << "error";//!!!!!!!!!!!!!!!!!! consider Q is alwats invetable
       }
+      //ncheck the V
       
-    }
+        vector<double> V1(4),V2(4),deltV1(4),deltV2(4);
+        V1[0]=mesh_init.Vertexs[vertex_id_1].x;
+        V1[1]=mesh_init.Vertexs[vertex_id_1].y;
+        V1[2]=mesh_init.Vertexs[vertex_id_1].z;
+        V1[3]=1;
+        V2[0]=mesh_init.Vertexs[vertex_id_2].x;
+        V2[1]=mesh_init.Vertexs[vertex_id_2].y;
+        V2[2]=mesh_init.Vertexs[vertex_id_2].z;
+        V2[3]=1;
 
+        for(size_t i = 0;i < 4;i++){
 
-    //    double error;{//calcylate the error
-      error = Q[0]*pow(V[0],2) + 2*Q[1]*V[0]*V[1] + Q[4]*pow(V[1],2) + 2*Q[2]*V[0]*V[2] + 2*Q[5]*V[1]*V[2] + Q[7]*pow(V[2],2) + 2*Q[3]*V[0]*V[3] + 2*Q[6]*V[1]*V[3] + 2*Q[8]*V[2]*V[3] + Q[9]*pow(V[3],2);
+          deltV1[i] = V2[i]-V1[i];
+          deltV2[i] = V2[i]-V[i];
+      
+        }
 
+        double d2 = sqrt(deltV2[0]*deltV2[0]+deltV2[1]*deltV2[1]+deltV2[2]*deltV2[2]),
+            d1 = sqrt(deltV1[0]*deltV1[0]+deltV1[1]*deltV1[1]+deltV1[2]*deltV1[2]);
+        for(size_t i = 0;i < 4; i++)  {
+          deltV2[i] = deltV2[i]/d2;
+          deltV1[i] = deltV1[i]/d1;
+        }
+        double mu =0;
+        for(size_t i =0;i < 4;i ++){
+          mu += deltV1[i]*deltV2[i];
+        }
+         
     
+      
+      
+    
+
+
+      //    double error;{//calcylate the error
+      if (mu > 0.9 || mu <-0.9)
+        error = Q[0]*pow(V[0],2) + 2*Q[1]*V[0]*V[1] + Q[4]*pow(V[1],2) + 2*Q[2]*V[0]*V[2] + 2*Q[5]*V[1]*V[2] + Q[7]*pow(V[2],2) + 2*Q[3]*V[0]*V[3] + 2*Q[6]*V[1]*V[3] + 2*Q[8]*V[2]*V[3] + Q[9]*pow(V[3],2);
+      else{
+        double error1,error2,error3;
+      
+        vector<double> V3(4);
+        for (size_t i = 0;i < 4;i++){
+          V3[i] = 0.5*(V1[i]+V2[i]);
+        }
+        error1 = Q[0]*pow(V1[0],2) + 2*Q[1]*V1[0]*V1[1] + Q[4]*pow(V1[1],2) + 2*Q[2]*V1[0]*V1[2] + 2*Q[5]*V1[1]*V1[2] + Q[7]*pow(V1[2],2) + 2*Q[3]*V1[0]*V1[3] + 2*Q[6]*V1[1]*V1[3] + 2*Q[8]*V1[2]*V1[3] + Q[9]*pow(V1[3],2);
+        error2 =  Q[0]*pow(V2[0],2) + 2*Q[1]*V2[0]*V2[1] + Q[4]*pow(V2[1],2) + 2*Q[2]*V2[0]*V2[2] + 2*Q[5]*V2[1]*V2[2] + Q[7]*pow(V2[2],2) + 2*Q[3]*V2[0]*V2[3] + 2*Q[6]*V2[1]*V2[3] + 2*Q[8]*V2[2]*V2[3] + Q[9]*pow(V2[3],2);
+        error3 =  Q[0]*pow(V3[0],2) + 2*Q[1]*V3[0]*V3[1] + Q[4]*pow(V3[1],2) + 2*Q[2]*V3[0]*V3[2] + 2*Q[5]*V3[1]*V3[2] + Q[7]*pow(V3[2],2) + 2*Q[3]*V3[0]*V3[3] + 2*Q[6]*V3[1]*V3[3] + 2*Q[8]*V3[2]*V3[3] + Q[9]*pow(V3[3],2);
+
+        if (error1 < error2){
+          if (error1 < error3){
+            error = error1;
+            V = V1;
+          }
+          else{
+            error = error3;
+            V = V3;
+          }
+        }
+        else{
+          if(error2 < error3){
+            error = error2;
+            V = V2;
+          }
+          else{
+            error = error3;
+            V = V3;
+          }
+        }
+
+
+      
+      }
   
 }
