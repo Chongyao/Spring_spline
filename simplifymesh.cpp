@@ -73,12 +73,13 @@ size_t  edge_r_id = edge_id;
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
       if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
-        size_t edge_c_id;
-        edge_c_id = mesh_init.HalfEdges[edge_r_id].oppo_;
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
+        size_t edge_c_id = edge_r_id;
+        do{
         edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
         edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-        mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+        if (mesh_init.HalfEdges[edge_c_id].is_exist)
+          mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+        }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
       }
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_id != edge_r_id);
@@ -88,12 +89,13 @@ size_t  edge_r_id = edge_id;
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
       if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
-        size_t edge_c_id;
-        edge_c_id = mesh_init.HalfEdges[edge_r_id].oppo_;
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-        mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+        size_t edge_c_id = edge_r_id;
+        do{
+          edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+          edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
+          if (mesh_init.HalfEdges[edge_c_id].is_exist)
+            mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+        }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
       }
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_oppo_id != edge_r_id);
