@@ -260,13 +260,22 @@ void halfedge::cal_Kp_face(H_face &face_){
   }
   double a,b,c,d;{ // calculate a,b,c,d
     a = y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]);
-    b = x[1]*z[0] - x[2]*z[0] - x[0]*z[1] + x[2]*z[1] + x[0]*z[2] - x[1]*z[2];
-    c = x[2]*(-y[0] + y[1]) + x[1]*(y[0] - y[2]) + x[0]*(-y[1] + y[2]);
+    b = x[2]*(-z[0] + z[1]) + x[1]*(z[0] - z[2]) + x[0]*(-z[1] + z[2]);
+    c = x[2]*(y[0] - y[1]) + x[0]*(y[1] - y[2]) + x[1]*(-y[0] + y[2]);
     d = sqrt(a*a + b*b + c*c);
     a = a/d;
     b = b/d;
     c = c/d;
     d = -(a*x[0]+ b*y[0] + c*z[0]);
+    // {
+    //   double s =  -(a*x[1]+ b*y[1] + c*z[1]);
+    //   double h =  -(a*x[2]+ b*y[2] + c*z[2]);
+    //   if (d-s > 0.00001) {cout << "d is wrong.\n";
+    //     cout << "d is " << d << " s is " << s ;
+    //   }
+    //   if (h-s > 000001) cout << "d is wrong.\n";
+      
+    // }
     }
   
   face_. Kp[0] = a*a;
@@ -280,7 +289,6 @@ void halfedge::cal_Kp_face(H_face &face_){
   face_. Kp[8] = c*d;
   face_. Kp[9] = d*d;
 }
-
 
 
 void halfedge::cal_Kp_vertex(H_vertex &vertex_){
