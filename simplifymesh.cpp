@@ -1,8 +1,6 @@
-#include<cmath>
-#include "simplifymesh.h"
-#include<algorithm>
-#include<iostream>
 #include"requation.h"
+#include<cmath>
+#include"simplifymesh.h"
 #define INF 99999999；
 
 using namespace std;
@@ -240,13 +238,21 @@ void simplify_mesh::make_priority(){
 }
 void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the halfedges changed 
   size_t edge_oppo_id = mesh_init. HalfEdges[edge_id].oppo_;
-  if (edge_oppo_id == -1){
-    priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
-    priority.erase({edge_oppo_id,mesh_init.HalfEdges[edge_oppo_id].length});
+
+
+  size_t count = 0;
+  
+  if (edge_oppo_id != -1){
+count = priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+count = priority.erase({edge_oppo_id,mesh_init.HalfEdges[edge_oppo_id].length});
   }
   else{
-        priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+      count = priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
   }
+
+
+  if (count == 0)
+    cout <<"the element is not exist!\n";
   
 }
 int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, vector<double>&new_V){
@@ -337,8 +343,9 @@ pop:
   return edge_bound_id;
 }
 void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new ,const vector<double> &V){//You must modify priority before modify the Halfedges vector
-  pop_priority(edge_id);
-  ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length}; 
+  //pop_priority(edge_id);
+  size_t is_erase =  priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+  ident temp_ = {edge_id,value_new}; 
   priority.insert({temp_,V});
  
 }
