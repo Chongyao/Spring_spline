@@ -1,6 +1,7 @@
 #include"requation.h"
 #include<cmath>
 #include"simplifymesh.h"
+#include<sstream>
 #define INF 99999999；
 
 using namespace std;
@@ -18,7 +19,7 @@ bool operator <(const ident &a,const ident &b){
 
 
 
-void simplify_mesh::Simp_shorstest(const size_t &iter_times){
+void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfile){
   //find the shortest edge
   make_priority();
   cout <<"the size is "<< priority.size() << "\n";
@@ -51,7 +52,16 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times){
   
    
     cout<<"\n\n";
-  
+    if( (i+1)%1000 == 0) {
+      string out_ ,temp;
+      stringstream _str_;
+      _str_ << i;
+      _str_ >> temp;
+      out_.append(outfile);
+      out_.append(temp);
+      out_.append(".obj");
+      mesh_init.halfedge_to_obj(out_);
+    }
   }
 }
 

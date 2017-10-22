@@ -241,7 +241,7 @@ void halfedge::halfedge_to_obj( const string &outfile){
     }
   }
   fout.close();
-  cout<<"\nend of writing";  
+  cout << outfile <<" end of writing.\n";  
 }
 
 void halfedge::cal_Kp_face(H_face &face_){

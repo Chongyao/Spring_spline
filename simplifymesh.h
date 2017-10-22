@@ -14,7 +14,7 @@ class simplify_mesh
   simplify_mesh(halfedge &HE):mesh_init(HE),zero_({0,0}){}
   halfedge mesh_init;
 
-  void Simp_shorstest(const size_t &iter_times);
+  void Simp_shorstest(const size_t &iter_times, const std::string &outfile);
   // int main_();
 
  private:

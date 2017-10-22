@@ -18,8 +18,8 @@ int main(int argc,char* argv[])
     if( data.ReadData(Input) != -1){
     data.ConstructHalfedge();
     simplify_mesh data_simp(data);
-    data_simp. Simp_shorstest(itertime);
-    data_simp.mesh_init. halfedge_to_obj(Output);
+    data_simp. Simp_shorstest(itertime,Output);
+    //    data_simp.mesh_init. halfedge_to_obj(Output);
     }
     else
       cout << "read error";
@@ -38,7 +38,8 @@ void read_argv( int argc, char** argv,string &Input, string &Output, size_t &ite
     }
     else if (keyword.find("outfile") != -1){
       Output.append(keyword.begin()+8,keyword.end());
-      Output.append(".obj");
+      Output.append("/");
+      Output.append(keyword.begin()+8,keyword.end());
     }
     else if (keyword.find("itertime") != -1){
       stringstream iter_;
