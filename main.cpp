@@ -19,7 +19,8 @@ int main(int argc,char* argv[])
     data.ConstructHalfedge();
     simplify_mesh data_simp(data);
     data_simp. Simp_shorstest(itertime,Output);
-    //    data_simp.mesh_init. halfedge_to_obj(Output);
+    Output.append("last.obj");
+    data_simp.mesh_init. halfedge_to_obj(Output);
     }
     else
       cout << "read error";

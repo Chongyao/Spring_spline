@@ -38,11 +38,17 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
 
     //check the manifold
     int result;
+    size_t count = 0;
     do{
       result = check_manifold(edge_id, edge_oppo_id,new_V);
       cout << "result of check of manifold is "<< result <<"\n";
+      count ++;
+      if (count > 500)
+        goto terminate;
     }while(result == -1);
-
+    terminate:
+    if(count > 500) break;
+    
     //pop the priority
     pop_priority(edge_id);
      
@@ -346,7 +352,11 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, vector<do
     if (is_cllap) cout<< "the edge is collapsable\n";  
 pop:
   if (is_cllap == false) {
-    pop_priority(edge_id);
+    ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length};
+    double new_value = mesh_init.HalfEdges[edge_id].length*10;
+    vector<double>V = priority[temp_];
+    modify_priority(edge_id, new_value, V);
+    mesh_init.HalfEdges[edge_id].length *= 10;
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
     edge_id = iter->first.id;
@@ -358,6 +368,7 @@ pop:
 void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new ,const vector<double> &V){//You must modify priority before modify the Halfedges vector
   //pop_priority(edge_id);
   size_t is_erase =  priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+  if (is_erase == 0) cout <<"erase fail!\n";
   ident temp_ = {edge_id,value_new}; 
   priority.insert({temp_,V});
  
