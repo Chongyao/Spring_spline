@@ -46,6 +46,11 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
       if (count > 500)
         goto terminate;
     }while(result == -1);
+
+    if(priority.size() == 0){
+      count = 501;
+      goto terminate;
+    }
     terminate:
     if(count > 500) break;
     
@@ -61,7 +66,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
     if( (i+1)%1000 == 0) {
       string out_ ,temp;
       stringstream _str_;
-      _str_ << i;
+      _str_ << i+1;
       _str_ >> temp;
       out_.append(outfile);
       out_.append(temp);
@@ -353,10 +358,10 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, vector<do
 pop:
   if (is_cllap == false) {
     ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length};
-    double new_value = mesh_init.HalfEdges[edge_id].length*10;
+    double new_value = mesh_init.HalfEdges[edge_id].length*99999;
     vector<double>V = priority[temp_];
     modify_priority(edge_id, new_value, V);
-    mesh_init.HalfEdges[edge_id].length *= 10;
+    mesh_init.HalfEdges[edge_id].length *= 99999;
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
     edge_id = iter->first.id;
