@@ -63,7 +63,17 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
   
    
     cout<<"\n\n";
-    if( (i+1)%1000 == 0) {
+    if( i<30000 &&(i+1)%1000 == 0) {
+      string out_ ,temp;
+      stringstream _str_;
+      _str_ << i+1;
+      _str_ >> temp;
+      out_.append(outfile);
+      out_.append(temp);
+      out_.append(".obj");
+      mesh_init.halfedge_to_obj(out_);
+    }
+    if( i>30000 && (i+1)%200 == 0){
       string out_ ,temp;
       stringstream _str_;
       _str_ << i+1;
@@ -93,14 +103,17 @@ size_t  edge_r_id = edge_id;
     do{
       mesh_init.HalfEdges[edge_r_id].is_exist = false;
       size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
-      if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
-        size_t edge_c_id = edge_r_id;
-        do{
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
-        edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-        if (mesh_init.HalfEdges[edge_c_id].is_exist)
-          mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
-        }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
+      
+      {
+        if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
+          size_t edge_c_id = edge_r_id;
+          do{
+            edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+            edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
+            if (mesh_init.HalfEdges[edge_c_id].is_exist)
+              mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
+          }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
+        }
       }
       edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
     }while(edge_id != edge_r_id);
@@ -358,10 +371,10 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, vector<do
 pop:
   if (is_cllap == false) {
     ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length};
-    double new_value = mesh_init.HalfEdges[edge_id].length*99999;
+    double new_value = mesh_init.HalfEdges[edge_id].length*999999999;
     vector<double>V = priority[temp_];
     modify_priority(edge_id, new_value, V);
-    mesh_init.HalfEdges[edge_id].length *= 99999;
+    mesh_init.HalfEdges[edge_id].length *= 999999999;
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
     edge_id = iter->first.id;
