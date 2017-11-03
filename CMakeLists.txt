@@ -8,6 +8,5 @@ file(GLOB header *.h)
 set(SOURCE_FILES main.cpp)
 file(GLOB SOURCE_FILES *.cpp)
 
-
 add_executable(meshSimp ${SOURCE_FILES})
 

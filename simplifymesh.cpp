@@ -3,7 +3,7 @@
 #include"simplifymesh.h"
 #include<sstream>
 #define INF 99999999；
-
+#include"zjucad/matrix/include/io.h"
 using namespace std;
 using namespace zjucad::matrix;
 
@@ -44,7 +44,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
       result = check_manifold(edge_id, edge_oppo_id,new_V);
       cout << "result of check of manifold is "<< result <<"\n";
       count ++;
-      if (count > 500)
+      if (count > 500) 
         goto terminate;
     }while(result == -1);
 
@@ -394,17 +394,17 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, matrix<doubl
     size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
         edge_id_prev = mesh_init.HalfEdges[edge_id].prev_,
         vertex_id_2 = mesh_init.HalfEdges[edge_id_prev].vertex_;
+    
     Q = mesh_init.Vertexs[vertex_id_1].Kp + mesh_init.Vertexs[vertex_id_2].Kp;
   }
-
     //calculateinverse the V
-  double delt  = -(pow(Q[0,2],2)*Q[1,1]) + 2*Q[0,1]*Q[0,2]*Q[1,2] - Q[0,0]*pow(Q[1,2],2) - pow(Q[0,1],2)*Q[2,2] + Q[0,0]*Q[1,1]*Q[2,2];
+  double delt = -(pow(Q(0,2),2)*Q(1,1)) + 2*Q(0,1)*Q(0,2)*Q(1,2) - Q(0,0)*pow(Q(1,2),2) - pow(Q(0,1),2)*Q(2,2) + Q(0,0)*Q(1,1)*Q(2,2); 
 
-   
+  cout<<"delt is "<< delt << endl;
       if( delt > 1e-18){
-        V(0) = (-(Q[0,2]*Q[1,2]*Q[1,3]) + Q[0,1]*Q[1,3]*Q[2,2] + Q[0,3]*(pow(Q[1,2],2) - Q[1,1]*Q[2,2]) + Q[0,2]*Q[1,1]*Q[2,3] - Q[0,1]*Q[1,2]*Q[2,3])/delt;
-        V(1) = (pow(Q[0,2],2)*Q[1,3] + Q[0,1]*Q[0,3]*Q[2,2] - Q[0,0]*Q[1,3]*Q[2,2] + Q[0,0]*Q[1,2]*Q[2,3] - Q[0,2]*(Q[0,3]*Q[1,2] + Q[0,1]*Q[2,3]))/delt;
-        V(2) = (Q[0,2]*Q[0,3]*Q[1,1] - Q[0,1]*Q[0,3]*Q[1,2] - Q[0,1]*Q[0,2]*Q[1,3] + Q[0,0]*Q[1,2]*Q[1,3] + pow(Q[0,1],2)*Q[2,3] - Q[0,0]*Q[1,1]*Q[2,3])/delt;
+        V(0) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
+        V(1) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
+        V(2) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
         V(3) = 1;
       }
       else{

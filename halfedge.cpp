@@ -4,6 +4,7 @@
 #include<cmath>
 #include <iostream>
 #include<map>
+#include"zjucad/matrix/include/io.h"
 using namespace std;
 using namespace zjucad::matrix;
 bool operator<(const H_edge &a, const H_edge &b)
@@ -242,18 +243,18 @@ void halfedge::cal_Kp_face(H_face &face_){
            B[i] = Vertexs[vertex_id[0]].position[i]-Vertexs[vertex_id[2]].position[i];
        }
    }
-
    matrix<double> face_normal(4,1);{
        matrix<double> face_normal_temp = cross(A,B);
-       double det = norm(face_normal);
+       double det = norm(face_normal_temp);
        face_normal_temp /= det;
        face_normal[0] = face_normal_temp[0];
        face_normal[1] = face_normal_temp[1];
        face_normal[2] = face_normal_temp[2];
        face_normal[3] = -dot(face_normal,Vertexs[vertex_id[0]].position);
    }
+
    //Kp
-   matrix<double> Kp = face_normal*trans(face_normal);
+   face_.Kp = face_normal*trans(face_normal);
 }
 
 
@@ -261,7 +262,7 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
       face_id = HalfEdges[edge_id]. face_;
-  vertex_. Kp = matrix<double> (4,4);
+  vertex_. Kp.resize(4,4);
   do{
     vertex_.Kp += Faces[face_id].Kp;
     edge_id = HalfEdges[edge_id]. next_;
@@ -269,5 +270,5 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
     face_id = HalfEdges[edge_id]. face_;
   }while(edge_id != edge_end_id);
 
-  
+
 }
