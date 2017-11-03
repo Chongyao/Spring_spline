@@ -20,7 +20,7 @@ bool operator <(const ident &a,const ident &b){
 
 
 
-void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfile){
+void simplify_mesh::simp_shorstest(const size_t &iter_times, const string &outfile){
   //find the shortest edge
   make_priority();
   cout <<"the size is "<< priority.size() << "\n";
@@ -34,7 +34,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
       edge_id = iter->first.id;
       new_V = iter->second;
     }
-    int   edge_oppo_id = mesh_init. HalfEdges[ edge_id ]. oppo_;
+    int   edge_oppo_id = mesh_init.half_edges_[ edge_id ]. oppo_;
     
 
     //check the manifold
@@ -88,7 +88,7 @@ void simplify_mesh::Simp_shorstest(const size_t &iter_times, const string &outfi
 }
 
 void simplify_mesh::change_topology( const matrix<double> &new_V, const size_t &edge_id, const int &edge_oppo_id, const int &result){
-  delete_halfedges(edge_id,edge_oppo_id);
+  delete_half_edges(edge_id,edge_oppo_id);
   delete_vertex(edge_oppo_id);
   delete_faces(edge_id,edge_oppo_id);
   size_t vertex_ur_id = change_vertex(edge_id, edge_oppo_id, new_V, result);
@@ -98,41 +98,41 @@ void simplify_mesh::change_topology( const matrix<double> &new_V, const size_t &
   change_priority(vertex_ur_id);
 }
 
-void simplify_mesh::delete_halfedges(const size_t &edge_id,const size_t &edge_oppo_id){
+void simplify_mesh::delete_half_edges(const size_t &edge_id,const size_t &edge_oppo_id){
 size_t  edge_r_id = edge_id;
 
     do{
-      mesh_init.HalfEdges[edge_r_id].is_exist = false;
-      size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
+      mesh_init.half_edges_[edge_r_id].is_exist = false;
+      size_t vertex_id = mesh_init.half_edges_[edge_r_id].vertex_;
       
       {
-        if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
+        if (mesh_init.vertexs_[vertex_id].edge_ == edge_r_id ){
           size_t edge_c_id = edge_r_id;
           do{
-            edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
-            edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-            if (mesh_init.HalfEdges[edge_c_id].is_exist)
-              mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
-          }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
+            edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
+            edge_c_id = mesh_init.half_edges_[edge_c_id].prev_;
+            if (mesh_init.half_edges_[edge_c_id].is_exist)
+              mesh_init.vertexs_[vertex_id].edge_ = edge_c_id;
+          }while(!mesh_init.half_edges_[edge_c_id].is_exist);
         }
       }
-      edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
+      edge_r_id = mesh_init.half_edges_[edge_r_id].next_;
     }while(edge_id != edge_r_id);
 
     edge_r_id = edge_oppo_id;
     do{
-      mesh_init.HalfEdges[edge_r_id].is_exist = false;
-      size_t vertex_id = mesh_init.HalfEdges[edge_r_id].vertex_;
-      if (mesh_init.Vertexs[vertex_id].edge_ == edge_r_id ){
+      mesh_init.half_edges_[edge_r_id].is_exist = false;
+      size_t vertex_id = mesh_init.half_edges_[edge_r_id].vertex_;
+      if (mesh_init.vertexs_[vertex_id].edge_ == edge_r_id ){
         size_t edge_c_id = edge_r_id;
         do{
-          edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
-          edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-          if (mesh_init.HalfEdges[edge_c_id].is_exist)
-            mesh_init.Vertexs[vertex_id].edge_ = edge_c_id;
-        }while(!mesh_init.HalfEdges[edge_c_id].is_exist);
+          edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
+          edge_c_id = mesh_init.half_edges_[edge_c_id].prev_;
+          if (mesh_init.half_edges_[edge_c_id].is_exist)
+            mesh_init.vertexs_[vertex_id].edge_ = edge_c_id;
+        }while(!mesh_init.half_edges_[edge_c_id].is_exist);
       }
-      edge_r_id = mesh_init.HalfEdges[edge_r_id].next_;
+      edge_r_id = mesh_init.half_edges_[edge_r_id].next_;
     }while(edge_oppo_id != edge_r_id);
     cout <<"the edges have been deleted.\n";
 }
@@ -141,95 +141,95 @@ size_t  edge_r_id = edge_id;
       
    
 void simplify_mesh::delete_vertex(const size_t &edge_oppo_id){
-  size_t vertex_r_id = mesh_init.HalfEdges [ edge_oppo_id ].vertex_;
-    mesh_init.Vertexs [ vertex_r_id ].is_exist = false;
+  size_t vertex_r_id = mesh_init.half_edges_ [ edge_oppo_id ].vertex_;
+    mesh_init.vertexs_ [ vertex_r_id ].is_exist = false;
     cout<<"the vertex " << vertex_r_id <<" has been deleted.\n";
   
 }
 void simplify_mesh::delete_faces(const size_t &edge_id,const size_t &edge_oppo_id){
 
-  size_t face_r_id = mesh_init.HalfEdges[ edge_id ].face_;
-    mesh_init. Faces[ face_r_id ]. is_exist = false;
+  size_t face_r_id = mesh_init.half_edges_[ edge_id ].face_;
+    mesh_init.faces_[ face_r_id ]. is_exist = false;
     if( edge_oppo_id != -1) {
-    face_r_id = mesh_init. HalfEdges[ edge_oppo_id ]. face_;
-    mesh_init. Faces[ face_r_id ]. is_exist = false;
+    face_r_id = mesh_init.half_edges_[ edge_oppo_id ]. face_;
+    mesh_init.faces_[ face_r_id ]. is_exist = false;
     }
     cout<<"the face has been deleted.\n";
 }
 
 
 size_t simplify_mesh::change_vertex(const size_t &edge_id, const size_t &edge_oppo_id,const matrix<double> &new_V,const int &result){
-   const size_t vertex_ur_id = mesh_init.HalfEdges[edge_id]. vertex_; 
-   mesh_init.Vertexs[vertex_ur_id].position = new_V;   
+   const size_t vertex_ur_id = mesh_init.half_edges_[edge_id]. vertex_;
+   mesh_init.vertexs_[vertex_ur_id].position = new_V;
     size_t edge_change_id, edge_end_id;
     if (result == -2){
        edge_change_id = edge_oppo_id;
-       edge_end_id = mesh_init. HalfEdges [edge_id]. prev_;
+       edge_end_id = mesh_init.half_edges_ [edge_id]. prev_;
     }
     else {
       edge_change_id = result;
       edge_end_id = -1;
     }
     do{
-      mesh_init. HalfEdges[ edge_change_id]. vertex_ = vertex_ur_id;
-      edge_change_id = mesh_init. HalfEdges [edge_change_id]. next_;
+      mesh_init.half_edges_[ edge_change_id]. vertex_ = vertex_ur_id;
+      edge_change_id = mesh_init.half_edges_ [edge_change_id]. next_;
       
-      edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
+      edge_change_id = mesh_init.half_edges_ [edge_change_id]. oppo_;
     }while ( edge_change_id != edge_end_id);
     cout << "vertex has been changed.\n";
     return vertex_ur_id;
 }
 void simplify_mesh::change_oppoedge(const size_t &edge_id, const size_t &edge_oppo_id) {  
-  size_t edge_oppo_ur = mesh_init. HalfEdges [edge_id]. next_;
-  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_ur]. oppo_;
+  size_t edge_oppo_ur = mesh_init.half_edges_ [edge_id]. next_;
+  edge_oppo_ur = mesh_init.half_edges_ [edge_oppo_ur]. oppo_;
    
-  size_t edge_change_id = mesh_init. HalfEdges [edge_id]. prev_;
-  edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
-  mesh_init. HalfEdges [edge_change_id]. oppo_ = edge_oppo_ur;
-  mesh_init. HalfEdges [edge_oppo_ur]. oppo_ = edge_change_id;
+  size_t edge_change_id = mesh_init.half_edges_ [edge_id]. prev_;
+  edge_change_id = mesh_init.half_edges_ [edge_change_id]. oppo_;
+  mesh_init.half_edges_ [edge_change_id]. oppo_ = edge_oppo_ur;
+  mesh_init.half_edges_ [edge_oppo_ur]. oppo_ = edge_change_id;
   
-  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_id]. prev_;
-  edge_oppo_ur = mesh_init. HalfEdges [edge_oppo_ur]. oppo_;
+  edge_oppo_ur = mesh_init.half_edges_ [edge_oppo_id]. prev_;
+  edge_oppo_ur = mesh_init.half_edges_ [edge_oppo_ur]. oppo_;
 
-  edge_change_id = mesh_init. HalfEdges [edge_oppo_id]. next_;
-  edge_change_id = mesh_init. HalfEdges [edge_change_id]. oppo_;
-  mesh_init. HalfEdges [edge_change_id]. oppo_ = edge_oppo_ur;
-  mesh_init. HalfEdges [edge_oppo_ur]. oppo_ = edge_change_id;
+  edge_change_id = mesh_init.half_edges_ [edge_oppo_id]. next_;
+  edge_change_id = mesh_init.half_edges_ [edge_change_id]. oppo_;
+  mesh_init.half_edges_ [edge_change_id]. oppo_ = edge_oppo_ur;
+  mesh_init.half_edges_ [edge_oppo_ur]. oppo_ = edge_change_id;
 
   cout << "the opposite edges have been changed.\n";
 }
 
 void simplify_mesh::change_face_kp(const size_t &vertex_ur_id){
-  size_t edge_c_id  = mesh_init.Vertexs[vertex_ur_id].edge_,
+  size_t edge_c_id  = mesh_init.vertexs_[vertex_ur_id].edge_,
       edge_end_id = edge_c_id;
   do{
-    size_t face_id = mesh_init.HalfEdges[edge_c_id].face_;
-    mesh_init.cal_Kp_face(mesh_init.Faces[face_id]);
-    edge_c_id = mesh_init.HalfEdges[edge_c_id].next_;
-    edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+    size_t face_id = mesh_init.half_edges_[edge_c_id].face_;
+    mesh_init.cal_Kp_face(mesh_init.faces_[face_id]);
+    edge_c_id = mesh_init.half_edges_[edge_c_id].next_;
+    edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
   }while(edge_c_id != edge_end_id);
 
   cout << "faces kp have been changed.\n";
 }
 
 void simplify_mesh::change_vertex_kp(const size_t &vertex_ur_id)  {
-  mesh_init.cal_Kp_vertex(mesh_init.Vertexs[vertex_ur_id]);
-  size_t edge_c_id = mesh_init.Vertexs[vertex_ur_id].edge_;
-  edge_c_id = mesh_init.HalfEdges[edge_c_id].next_;
+  mesh_init.cal_Kp_vertex(mesh_init.vertexs_[vertex_ur_id]);
+  size_t edge_c_id = mesh_init.vertexs_[vertex_ur_id].edge_;
+  edge_c_id = mesh_init.half_edges_[edge_c_id].next_;
   size_t edge_end_id = edge_c_id;
   do{
-    size_t vertex_c_id = mesh_init.HalfEdges[edge_c_id].vertex_;
-    mesh_init.cal_Kp_vertex(mesh_init.Vertexs[vertex_c_id]);
-    edge_c_id = mesh_init.HalfEdges[edge_c_id]. prev_;
-    edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+    size_t vertex_c_id = mesh_init.half_edges_[edge_c_id].vertex_;
+    mesh_init.cal_Kp_vertex(mesh_init.vertexs_[vertex_c_id]);
+    edge_c_id = mesh_init.half_edges_[edge_c_id]. prev_;
+    edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
   }while(edge_c_id != edge_end_id);
   cout << "kp of vertexs have been changed.\n";
 }
 
 
 void simplify_mesh::change_priority(const size_t &vertex_ur_id){
-  size_t edge_c_id = mesh_init.Vertexs[vertex_ur_id].edge_;
-  edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+  size_t edge_c_id = mesh_init.vertexs_[vertex_ur_id].edge_;
+  edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
   size_t edge_last_id = edge_c_id;
   do{
     size_t edge_end_id = edge_c_id;     
@@ -239,18 +239,18 @@ void simplify_mesh::change_priority(const size_t &vertex_ur_id){
 
       cal_error(edge_c_id,error,V);
       modify_priority(edge_c_id, error, V);
-      mesh_init.HalfEdges[edge_c_id].length = error;
+      mesh_init.half_edges_[edge_c_id].length = error;
         
-      edge_c_id = mesh_init.HalfEdges[edge_c_id].next_;
+      edge_c_id = mesh_init.half_edges_[edge_c_id].next_;
 
       cal_error(edge_c_id,error,V);
       modify_priority(edge_c_id, error, V);
-      mesh_init.HalfEdges[edge_c_id].length = error;
-      edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+      mesh_init.half_edges_[edge_c_id].length = error;
+      edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
         
     }while(edge_c_id != edge_end_id);
-    edge_c_id = mesh_init.HalfEdges[edge_c_id].prev_;
-    edge_c_id = mesh_init.HalfEdges[edge_c_id].oppo_;
+    edge_c_id = mesh_init.half_edges_[edge_c_id].prev_;
+    edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
   }while(edge_c_id != edge_last_id);
   cout << "priority has been changed.\n";
 }
@@ -258,31 +258,31 @@ void simplify_mesh::change_priority(const size_t &vertex_ur_id){
 
 
 void simplify_mesh::make_priority(){
-  size_t num = mesh_init.HalfEdges.size();
+  size_t num = mesh_init.half_edges_.size();
   for (size_t i = 0; i < num; i++){
     double value;
     matrix<double> V(4,1);
     cal_error(i,value,V);
     ident A = {i,value};
-    mesh_init.HalfEdges[i]. length = value;
+    mesh_init.half_edges_[i]. length = value;
     priority.insert({A,V});
     
   }
 
   
 }
-void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the halfedges changed 
-  size_t edge_oppo_id = mesh_init. HalfEdges[edge_id].oppo_;
+void simplify_mesh::pop_priority(const size_t &edge_id){//pop before the half_edges_ changed
+  size_t edge_oppo_id = mesh_init.half_edges_[edge_id].oppo_;
 
 
   size_t count = 0;
   
   if (edge_oppo_id != -1){
-count = priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
-count = priority.erase({edge_oppo_id,mesh_init.HalfEdges[edge_oppo_id].length});
+count = priority.erase({edge_id,mesh_init.half_edges_[edge_id].length});
+count = priority.erase({edge_oppo_id,mesh_init.half_edges_[edge_oppo_id].length});
   }
   else{
-      count = priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+      count = priority.erase({edge_id,mesh_init.half_edges_[edge_id].length});
   }
 
 
@@ -294,7 +294,7 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, matrix<do
   int edge_bound_id=-2;
   bool is_cllap = true;
 
-  if(!mesh_init. HalfEdges [edge_id].is_exist) {
+  if(!mesh_init.half_edges_ [edge_id].is_exist) {
     is_cllap = false;
     goto pop;
   }
@@ -305,8 +305,8 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, matrix<do
     bool is_bound_p = false;{ //check if p is on the boundry
       int edge_r = edge_id; 
       do{
-        edge_r = mesh_init. HalfEdges [edge_r]. next_;
-        edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
+        edge_r = mesh_init.half_edges_ [edge_r]. next_;
+        edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
 
         if (edge_r == -1) {
           is_bound_p = true;
@@ -319,8 +319,8 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, matrix<do
     bool is_bound_q = false;{ // check if q is on the boundry
       int edge_r_1 = edge_id,edge_r_2;
       do{
-        edge_r_2 = mesh_init. HalfEdges [edge_r_1]. prev_;
-        edge_r_1 = mesh_init. HalfEdges [edge_r_2]. oppo_;
+        edge_r_2 = mesh_init.half_edges_ [edge_r_1]. prev_;
+        edge_r_1 = mesh_init.half_edges_ [edge_r_2]. oppo_;
         if (edge_r_1 == -1) {
           edge_bound_id = edge_r_2;
           is_bound_q = true;
@@ -337,26 +337,26 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, matrix<do
     }}
   
  {  // check if this edge is in three triangles
-    int edge_r = mesh_init. HalfEdges [edge_id]. next_;
-    edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-    edge_r = mesh_init. HalfEdges [edge_r]. prev_;
-    edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-    edge_r = mesh_init. HalfEdges [edge_r]. prev_;
-    edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-    edge_r = mesh_init. HalfEdges [edge_r]. next_;
+    int edge_r = mesh_init.half_edges_ [edge_id]. next_;
+    edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+    edge_r = mesh_init.half_edges_ [edge_r]. prev_;
+    edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+    edge_r = mesh_init.half_edges_ [edge_r]. prev_;
+    edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+    edge_r = mesh_init.half_edges_ [edge_r]. next_;
     if (edge_r == edge_id) {
       is_cllap = false;
       goto pop;
     }
     
     if (edge_oppo_id != -1){
-      edge_r = mesh_init. HalfEdges [edge_oppo_id]. next_;
-      edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-      edge_r = mesh_init. HalfEdges [edge_r]. prev_;
-      edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-      edge_r = mesh_init. HalfEdges [edge_r]. prev_;
-      edge_r = mesh_init. HalfEdges [edge_r]. oppo_;
-      edge_r = mesh_init. HalfEdges [edge_r]. next_;
+      edge_r = mesh_init.half_edges_ [edge_oppo_id]. next_;
+      edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+      edge_r = mesh_init.half_edges_ [edge_r]. prev_;
+      edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+      edge_r = mesh_init.half_edges_ [edge_r]. prev_;
+      edge_r = mesh_init.half_edges_ [edge_r]. oppo_;
+      edge_r = mesh_init.half_edges_ [edge_r]. next_;
       if (edge_r == edge_id) {
         is_cllap = false;
         cout << "the edge has three triangles.\n";
@@ -368,22 +368,22 @@ int simplify_mesh::check_manifold(size_t &edge_id,  int &edge_oppo_id, matrix<do
     if (is_cllap) cout<< "the edge is collapsable\n";  
 pop:
   if (is_cllap == false) {
-    ident temp_ = {edge_id,mesh_init.HalfEdges[edge_id].length};
-    double new_value = mesh_init.HalfEdges[edge_id].length*999999999;
+    ident temp_ = {edge_id,mesh_init.half_edges_[edge_id].length};
+    double new_value = mesh_init.half_edges_[edge_id].length*999999999;
     matrix<double>V = priority[temp_];
     modify_priority(edge_id, new_value, V);
-    mesh_init.HalfEdges[edge_id].length *= 999999999;
+    mesh_init.half_edges_[edge_id].length *= 999999999;
     edge_bound_id = -1;
     auto iter = priority.upper_bound(zero_);
     edge_id = iter->first.id;
     new_V = iter->second;
-    edge_oppo_id = mesh_init. HalfEdges [edge_id]. oppo_;
+    edge_oppo_id = mesh_init.half_edges_ [edge_id]. oppo_;
   }
   return edge_bound_id;
 }
-void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new ,const matrix<double> &V){//You must modify priority before modify the Halfedges vector
+void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_new ,const matrix<double> &V){//You must modify priority before modify the half_edges vector
   //pop_priority(edge_id);
-  size_t is_erase =  priority.erase({edge_id,mesh_init.HalfEdges[edge_id].length});
+  size_t is_erase =  priority.erase({edge_id,mesh_init.half_edges_[edge_id].length});
   if (is_erase == 0) cout <<"erase fail!\n";
   ident temp_ = {edge_id,value_new}; 
   priority.insert({temp_,V});
@@ -391,11 +391,11 @@ void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_
 }
 void simplify_mesh::cal_error(const size_t &edge_id, double &error, matrix<double>&V){
   matrix<double> Q;{//calculate Q
-    size_t vertex_id_1 = mesh_init.HalfEdges[edge_id].vertex_,
-        edge_id_prev = mesh_init.HalfEdges[edge_id].prev_,
-        vertex_id_2 = mesh_init.HalfEdges[edge_id_prev].vertex_;
+    size_t vertex_id_1 = mesh_init.half_edges_[edge_id].vertex_,
+        edge_id_prev = mesh_init.half_edges_[edge_id].prev_,
+        vertex_id_2 = mesh_init.half_edges_[edge_id_prev].vertex_;
     
-    Q = mesh_init.Vertexs[vertex_id_1].Kp + mesh_init.Vertexs[vertex_id_2].Kp;
+    Q = mesh_init.vertexs_[vertex_id_1].Kp + mesh_init.vertexs_[vertex_id_2].Kp;
   }
     //calculateinverse the V
   double delt = -(pow(Q(0,2),2)*Q(1,1)) + 2*Q(0,1)*Q(0,2)*Q(1,2) - Q(0,0)*pow(Q(1,2),2) - pow(Q(0,1),2)*Q(2,2) + Q(0,0)*Q(1,1)*Q(2,2); 

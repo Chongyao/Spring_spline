@@ -42,7 +42,8 @@ int halfedge::read_data(const string &input_file){
     
     else if(keyword == "s")
       read_anno(fin,keyword);
-    
+    else if(keyword == "vt")
+      read_anno(fin,keyword);
     else
       cout<<"this identity is not exit.\n";
 
@@ -63,7 +64,7 @@ void halfedge::read_vertex( ifstream &fin,string &keyword){
   fin >> vertex_temp.position(2);
   vertex_temp.position(3) = 1;
   vertex_temp.Kp.resize(4,4);
-  Vertexs.push_back(vertex_temp);
+  vertexs_.push_back(vertex_temp);
   fin >> keyword;
   
   
@@ -81,7 +82,7 @@ void halfedge::read_face(ifstream &fin,string &keyword){
         temp >> vert_id;
         fin >> keyword;
       }
-      InitFaces.push_back(vert_id);
+      init_faces.push_back(vert_id);
     }
   }
   else{
@@ -89,11 +90,11 @@ void halfedge::read_face(ifstream &fin,string &keyword){
       stringstream temp;
       temp << keyword;
       temp >> vert_id;
-      InitFaces.push_back(vert_id);
+      init_faces.push_back(vert_id);
       fin >> vert_id;
-      InitFaces.push_back(vert_id);
+      init_faces.push_back(vert_id);
       fin >> vert_id;
-      InitFaces.push_back(vert_id);
+      init_faces.push_back(vert_id);
     }
       fin >> keyword;
 
@@ -106,40 +107,40 @@ void halfedge::read_anno(ifstream &fin, string &keyword){
   fin >> keyword;
 
 }
-void halfedge::ConstructHalfedge(){
-  size_t num = InitFaces.size();
+void halfedge::construct_half_edges(){
+  size_t num = init_faces.size();
 
   map<vertex_pair,size_t> pairs;
-  Faces = vector<H_face>(num/3);
+  faces_ = vector<H_face>(num/3);
 
-  HalfEdges = vector<H_edge> (num);
+  half_edges_ = vector<H_edge> (num);
 
   for(size_t i = 0;i < num/3;i++){
     
-    Faces[i].edge_ = i*3;
+    faces_[i].edge_ = i*3;
     for(size_t k = i*3;k < (i+1)*3;k++){
-      HalfEdges[k].vertex_ = InitFaces[k]-1;
+      half_edges_[k].vertex_ = init_faces[k]-1;
 
       vertex_pair v_pair_temp;
-      v_pair_temp.second = InitFaces[k]-1;
+      v_pair_temp.second = init_faces[k]-1;
      
-     Vertexs[InitFaces[k]-1].edge_ = k;
+     vertexs_[init_faces[k]-1].edge_ = k;
 
-      HalfEdges[k].face_ = i;
+      half_edges_[k].face_ = i;
 
       if(k == i*3){
-        HalfEdges[k].prev_ = k+2;
-        v_pair_temp.first = InitFaces[k+2]-1;
+        half_edges_[k].prev_ = k+2;
+        v_pair_temp.first = init_faces[k+2]-1;
         
       }
       else{
-        HalfEdges[k].prev_= k-1;
-        v_pair_temp.first = InitFaces[k-1]-1;
+        half_edges_[k].prev_= k-1;
+        v_pair_temp.first = init_faces[k-1]-1;
       }
       if(k == i*3+2)
-        HalfEdges[k].next_ = k-2;
+        half_edges_[k].next_ = k-2;
       else
-        HalfEdges[k].next_ = k+1;
+        half_edges_[k].next_ = k+1;
 
 
       pairs[v_pair_temp] = k;
@@ -153,28 +154,28 @@ void halfedge::ConstructHalfedge(){
   
   for(auto it = pairs.begin();it != pairs.end(); it++){
     auto it_oppo = pairs.find({it->first.second, it->first.first});
-    if(HalfEdges[it->second].oppo_ == -1 && it_oppo != pairs.end()){
-      HalfEdges[it->second].oppo_ = it_oppo->second;
-      HalfEdges[it_oppo->second].oppo_ = it->second;
+    if(half_edges_[it->second].oppo_ == -1 && it_oppo != pairs.end()){
+      half_edges_[it->second].oppo_ = it_oppo->second;
+      half_edges_[it_oppo->second].oppo_ = it->second;
     
     }
   } 
 
   //cal the faces kp
-  size_t num_faces = Faces.size();
+  size_t num_faces = faces_.size();
   for(size_t i = 0; i < num_faces; i++){
-    cal_Kp_face(Faces[i]);
+    cal_Kp_face(faces_[i]);
   }
   
 
-  //cal the vertexs Kp
+  //cal the vertexs_ Kp
 
   
-    size_t num_vertexs = Vertexs.size();
-    for (size_t i = 0; i < num_vertexs; i++){
-      cal_Kp_vertex(Vertexs[i]);
+    size_t num_vertexs_ = vertexs_.size();
+    for (size_t i = 0; i < num_vertexs_; i++){
+      cal_Kp_vertex(vertexs_[i]);
     }
-    cout << "kP of vertexs is calculated.\n";    
+    cout << "kP of vertexs_ is calculated.\n";
   
   
 
@@ -191,11 +192,11 @@ void halfedge::halfedge_to_obj( const string &outfile){
 
   ofstream fout(outfile);
   map<size_t,size_t> turn;
-  size_t num_vertex = Vertexs. size();{
+  size_t num_vertex = vertexs_. size();{
     size_t count=1;
     for (size_t i = 0;i < num_vertex; i++){
-      if (Vertexs[i]. is_exist){
-        fout<<"v "<<Vertexs[i].position(0)<<" "<<Vertexs[i].position(1)<<" "<<Vertexs[i].position(2)<<"\n";
+      if (vertexs_[i]. is_exist){
+        fout<<"v "<<vertexs_[i].position(0)<<" "<<vertexs_[i].position(1)<<" "<<vertexs_[i].position(2)<<"\n";
         turn[i] = count;
         ++count;
       }
@@ -204,16 +205,16 @@ void halfedge::halfedge_to_obj( const string &outfile){
       // }
     }
   }
-  size_t num_faces = Faces. size();{
+  size_t num_faces = faces_. size();{
     for(size_t i = 0; i < num_faces; ++i){
-      if(Faces[i]. is_exist){
-        const size_t edge_id = Faces[i]. edge_;
+      if(faces_[i]. is_exist){
+        const size_t edge_id = faces_[i]. edge_;
         size_t edge_c = edge_id;
         fout<<"f ";
         do{
-          size_t vert = HalfEdges [edge_c]. vertex_;
+          size_t vert = half_edges_ [edge_c]. vertex_;
           fout << turn [vert] << " ";
-          edge_c = HalfEdges [edge_c]. next_;
+          edge_c = half_edges_ [edge_c]. next_;
         }while(edge_id != edge_c);
         fout<<"\n";
       }
@@ -230,17 +231,17 @@ void halfedge::cal_Kp_face(H_face &face_){
   face_.Kp.resize(4,4);
   vector<size_t> vertex_id;{
   size_t edge_id = face_.edge_;
-  vertex_id.push_back(HalfEdges[edge_id].vertex_);
-  edge_id = HalfEdges[edge_id].next_;
-  vertex_id.push_back(HalfEdges[edge_id].vertex_);
-  edge_id = HalfEdges[edge_id].next_;
-  vertex_id.push_back(HalfEdges[edge_id].vertex_);
+  vertex_id.push_back(half_edges_[edge_id].vertex_);
+  edge_id = half_edges_[edge_id].next_;
+  vertex_id.push_back(half_edges_[edge_id].vertex_);
+  edge_id = half_edges_[edge_id].next_;
+  vertex_id.push_back(half_edges_[edge_id].vertex_);
   }
 
    matrix<double> A(3,1),B(3,1);{
        for (size_t i = 0;i < 3;i++){
-           A[i] = Vertexs[vertex_id[0]].position[i]-Vertexs[vertex_id[1]].position[i];
-           B[i] = Vertexs[vertex_id[0]].position[i]-Vertexs[vertex_id[2]].position[i];
+           A[i] = vertexs_[vertex_id[0]].position[i]-vertexs_[vertex_id[1]].position[i];
+           B[i] = vertexs_[vertex_id[0]].position[i]-vertexs_[vertex_id[2]].position[i];
        }
    }
    matrix<double> face_normal(4,1);{
@@ -250,7 +251,7 @@ void halfedge::cal_Kp_face(H_face &face_){
        face_normal[0] = face_normal_temp[0];
        face_normal[1] = face_normal_temp[1];
        face_normal[2] = face_normal_temp[2];
-       face_normal[3] = -dot(face_normal,Vertexs[vertex_id[0]].position);
+       face_normal[3] = -dot(face_normal,vertexs_[vertex_id[0]].position);
    }
 
    //Kp
@@ -261,13 +262,13 @@ void halfedge::cal_Kp_face(H_face &face_){
 void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
-      face_id = HalfEdges[edge_id]. face_;
+      face_id = half_edges_[edge_id]. face_;
   vertex_. Kp.resize(4,4);
   do{
-    vertex_.Kp += Faces[face_id].Kp;
-    edge_id = HalfEdges[edge_id]. next_;
-    edge_id = HalfEdges[edge_id]. oppo_;
-    face_id = HalfEdges[edge_id]. face_;
+    vertex_.Kp += faces_[face_id].Kp;
+    edge_id = half_edges_[edge_id]. next_;
+    edge_id = half_edges_[edge_id]. oppo_;
+    face_id = half_edges_[edge_id]. face_;
   }while(edge_id != edge_end_id);
 
 

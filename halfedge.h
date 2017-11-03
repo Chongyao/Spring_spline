@@ -10,7 +10,7 @@ struct H_face ;
 struct H_edge;
 struct H_vertex{
   H_vertex():
-      is_exist(true){};
+      is_exist(true){}
   //   double x;
   //   double y;
   //   double z;
@@ -47,15 +47,15 @@ class halfedge
  public:
   halfedge();
 
-  std::vector<int> InitFaces;
+  std::vector<int> init_faces;
   int read_data(const std::string &input_file);
 
-  void ConstructHalfedge();
+  void construct_half_edges();
 
   //core structure
-  std::vector<H_edge> HalfEdges;
-  std::vector<H_face> Faces;
-  std::vector<H_vertex> Vertexs;
+  std::vector<H_edge> half_edges_;
+  std::vector<H_face> faces_;
+  std::vector<H_vertex> vertexs_;
 
   //get information
 

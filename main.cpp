@@ -16,9 +16,9 @@ int main(int argc,char* argv[])
     
     
     if( data.read_data(Input) != -1){
-    data.ConstructHalfedge();
+    data.construct_half_edges();
     simplify_mesh data_simp(data);
-    data_simp. Simp_shorstest(itertime,Output);
+    data_simp.simp_shorstest(itertime,Output);
     Output.append("last.obj");
     data_simp.mesh_init. halfedge_to_obj(Output);
     }

@@ -14,7 +14,7 @@ class simplify_mesh
   simplify_mesh(halfedge &HE):mesh_init(HE),zero_({0,0}){}
   halfedge mesh_init;
 
-  void Simp_shorstest(const size_t &iter_times, const std::string &outfile);
+  void simp_shorstest(const size_t &iter_times, const std::string &outfile);
   // int main_();
 
  private:
@@ -31,7 +31,7 @@ class simplify_mesh
   void cal_error(const size_t &edge_id, double &error, zjucad::matrix::matrix<double> &V);
 
 
-  void delete_halfedges(const size_t &edge_id, const size_t &edge_oppo_id);
+  void delete_half_edges(const size_t &edge_id, const size_t &edge_oppo_id);
   void delete_vertex(const size_t &edge_oppo_id);
   void delete_faces(const size_t &edge_id, const size_t &edge_oppo_id);
   size_t change_vertex(const size_t &edge_id, const size_t &edge_oppo_id, const zjucad::matrix::matrix<double> &new_V, const int &result);
