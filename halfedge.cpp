@@ -31,6 +31,7 @@ int halfedge::read_data(const string &input_file){
     if(keyword=="#")
       read_anno(fin,keyword);
 
+
     else if(keyword=="v")
       read_vertex(fin,keyword);
 
@@ -45,7 +46,7 @@ int halfedge::read_data(const string &input_file){
     else if(keyword == "vt")
       read_anno(fin,keyword);
     else
-      cout<<"this identity is not exit.\n";
+      cout << "this identity is " << keyword << "this identity is not exit.\n";
 
   }
 

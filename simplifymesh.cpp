@@ -1,3 +1,4 @@
+
 #include"requation.h"
 #include<cmath>
 #include"simplifymesh.h"
@@ -24,10 +25,16 @@ void simplify_mesh::simp_shorstest(const size_t &iter_times, const string &outfi
   //find the shortest edge
   make_priority();
   cout <<"the size is "<< priority.size() << "\n";
-  
+
+  // cout << "priority is: " << endl; 
+  // for (auto iter = priority.begin();iter != priority.end(); iter++){
+  //     cout << "edge_id is " << iter->first.id << "value is " << iter->first.value << endl;
+  //     cout << iter->second << endl;
+  // }
+           
   for(size_t i = 0; i < iter_times; i++){
     cout << i << " iteration:\n";
-    
+     
     size_t edge_id ;
     matrix<double> new_V;{
       auto iter = priority.upper_bound(zero_);
@@ -400,18 +407,19 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, matrix<doubl
     //calculateinverse the V
   double delt = -(pow(Q(0,2),2)*Q(1,1)) + 2*Q(0,1)*Q(0,2)*Q(1,2) - Q(0,0)*pow(Q(1,2),2) - pow(Q(0,1),2)*Q(2,2) + Q(0,0)*Q(1,1)*Q(2,2); 
 
-  cout<<"delt is "<< delt << endl;
       if( delt > 1e-18){
         V(0) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
-        V(1) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
-        V(2) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
+        V(1) = (pow(Q(0,2),2)*Q(1,3) + Q(0,1)*Q(0,3)*Q(2,2) - Q(0,0)*Q(1,3)*Q(2,2) + Q(0,0)*Q(1,2)*Q(2,3) - Q(0,2)*(Q(0,3)*Q(1,2) + Q(0,1)*Q(2,3)))/delt;
+        V(2) = (Q(0,2)*Q(0,3)*Q(1,1) - Q(0,1)*Q(0,3)*Q(1,2) - Q(0,1)*Q(0,2)*Q(1,3) + Q(0,0)*Q(1,2)*Q(1,3) + pow(Q(0,1),2)*Q(2,3) - Q(0,0)*Q(1,1)*Q(2,3))/delt;
         V(3) = 1;
       }
       else{
         cout << "error";//!!!!!!!!!!!!!!!!!! consider Q is alwats invetable
       }
       error = dot(trans(V),Q * V);
-
+      // cout <<"edge is " << edge_id <<  "error is " << error <<endl;
+      //      cout << "V is " << V[0]<< " " << V[1] << " " << V[2] << endl;
+      //cout << Q << endl;
 
       
 }
