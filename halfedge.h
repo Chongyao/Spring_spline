@@ -10,21 +10,21 @@ struct H_face ;
 struct H_edge;
 struct H_vertex{
   H_vertex():
-      is_exist(true){}
+      is_exist(true){};
   //   double x;
   //   double y;
   //   double z;
-  zjucad::matrix::matrix<double> position;  
+  zjucad::matrix::matrix<double> position;
   size_t edge_;
   bool is_exist;
-  std::vector<double> Kp;
+  zjucad::matrix::matrix<double> Kp;
 };
 struct H_face{
   H_face():
       is_exist(true){}
   size_t edge_;
   bool is_exist;
-  std::vector<double> Kp;
+  zjucad::matrix::matrix<double> Kp;
 };
 struct H_edge{ // read_only to others
   H_edge():
@@ -59,15 +59,12 @@ class halfedge
 
   //get information
 
-  size_t Get_edge_next(size_t edge_id);
   void halfedge_to_obj( const std::string & outfile);
 
 
   void cal_Kp_face(H_face & face_);
   void cal_Kp_vertex(H_vertex &vertex_);
 
-  template<typename T>
-  void plus_vector(std::vector<T> &a, std::vector<T> &b,std::vector<T> &result);
  private:
   void read_vertex(std::ifstream &fin, std::string &keyword);
   void read_face(std::ifstream &fin, std::string &keyword);

@@ -3,7 +3,6 @@
 #include<sstream>
 #include<cmath>
 #include <iostream>
-#include<memory>
 #include<map>
 using namespace std;
 using namespace zjucad::matrix;
@@ -12,20 +11,7 @@ bool operator<(const H_edge &a, const H_edge &b)
   return a.length<b.length;
 }
 
-// bool operator<(const vertex_pair &a, const vertex_pair &b){
-//   if(a.first == b.first)
-//     return a.q < b.q;
-//   else
-//     return a.first < b.first;
-  
-// }
-template<typename T>
-void halfedge::plus_vector(vector<T> &a, vector<T> &b, vector<T> &result){
-  size_t num = a.size();
-  for(size_t i = 0;i < num; i++){
-    result[i] = a[i] + b[i];
-  }
-}
+
 halfedge::halfedge()
 {
 }
@@ -70,17 +56,20 @@ int halfedge::read_data(const string &input_file){
 
 void halfedge::read_vertex( ifstream &fin,string &keyword){
   H_vertex vertex_temp;
-  vertex_temp.position = matrix<double>(3,1);
-  fin>>vertex_temp.position(0);
-  fin>>vertex_temp.position(1);
-  fin>>vertex_temp.position(2);
-  this->Vertexs.push_back(vertex_temp);
-
-  fin>>keyword;
+  vertex_temp.position.resize(4,1);
+  fin >> vertex_temp.position(0);
+  fin >> vertex_temp.position(1);
+  fin >> vertex_temp.position(2);
+  vertex_temp.position(3) = 1;
+  vertex_temp.Kp.resize(4,4);
+  Vertexs.push_back(vertex_temp);
+  fin >> keyword;
+  
+  
 }
 
 void halfedge::read_face(ifstream &fin,string &keyword){
-  fin>>keyword;
+  fin >> keyword;
   int position = keyword.find("/",0);
   if (position != -1){
     while(keyword != "f" && !fin.eof()){
@@ -113,43 +102,43 @@ void halfedge::read_face(ifstream &fin,string &keyword){
 void halfedge::read_anno(ifstream &fin, string &keyword){
   string temp;
   getline(fin,temp);
-  fin>>keyword;
+  fin >> keyword;
 
 }
 void halfedge::ConstructHalfedge(){
-  size_t num=InitFaces.size();
+  size_t num = InitFaces.size();
 
   map<vertex_pair,size_t> pairs;
-  Faces=vector<H_face>(num/3);
+  Faces = vector<H_face>(num/3);
 
-  HalfEdges=vector<H_edge> (num);
+  HalfEdges = vector<H_edge> (num);
 
-  for(size_t i=0;i<num/3;i++){
+  for(size_t i = 0;i < num/3;i++){
     
-    Faces[i].edge_=i*3;
-    for(size_t k=i*3;k<(i+1)*3;k++){
-      HalfEdges[k].vertex_=InitFaces[k]-1;
+    Faces[i].edge_ = i*3;
+    for(size_t k = i*3;k < (i+1)*3;k++){
+      HalfEdges[k].vertex_ = InitFaces[k]-1;
 
       vertex_pair v_pair_temp;
       v_pair_temp.second = InitFaces[k]-1;
      
-     Vertexs[InitFaces[k]-1].edge_=k;
+     Vertexs[InitFaces[k]-1].edge_ = k;
 
-      HalfEdges[k].face_=i;
+      HalfEdges[k].face_ = i;
 
-      if(k==i*3){
-        HalfEdges[k].prev_=k+2;
+      if(k == i*3){
+        HalfEdges[k].prev_ = k+2;
         v_pair_temp.first = InitFaces[k+2]-1;
         
       }
       else{
-        HalfEdges[k].prev_=k-1;
+        HalfEdges[k].prev_= k-1;
         v_pair_temp.first = InitFaces[k-1]-1;
       }
-      if(k==i*3+2)
-        HalfEdges[k].next_= k-2;
+      if(k == i*3+2)
+        HalfEdges[k].next_ = k-2;
       else
-        HalfEdges[k].next_= k+1;
+        HalfEdges[k].next_ = k+1;
 
 
       pairs[v_pair_temp] = k;
@@ -157,10 +146,6 @@ void halfedge::ConstructHalfedge(){
    }
 
   }
-
-  
-
-  
 
 
   //find the opposite by map
@@ -195,10 +180,6 @@ void halfedge::ConstructHalfedge(){
   cout<<"the data has been converted to halfedge constructure.\n";
 }
 
-size_t halfedge::Get_edge_next(size_t edge_id)
-{
-  return this->HalfEdges[edge_id].next_;
-}
 
 
 
@@ -245,19 +226,7 @@ void halfedge::halfedge_to_obj( const string &outfile){
 }
 
 void halfedge::cal_Kp_face(H_face &face_){
-  face_.Kp = vector<double>(10);
-//  vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
-//    size_t edge_id = face_.edge_,
-//        vertex_id = HalfEdges[edge_id].vertex_;
-//    for(size_t i = 0; i < 3; i++){
-//      x[i] = Vertexs[vertex_id].x;
-//      y[i] = Vertexs[vertex_id].y;
-//      z[i] = Vertexs[vertex_id].z;
-    
-//      edge_id = HalfEdges[edge_id]. next_;
-//      vertex_id = HalfEdges[edge_id]. vertex_;
-//    }
-//  }
+  face_.Kp.resize(4,4);
   vector<size_t> vertex_id;{
   size_t edge_id = face_.edge_;
   vertex_id.push_back(HalfEdges[edge_id].vertex_);
@@ -285,36 +254,6 @@ void halfedge::cal_Kp_face(H_face &face_){
    }
    //Kp
    matrix<double> Kp = face_normal*trans(face_normal);
-//  double a,b,c,d;{ // calculate a,b,c,d
-//    a = y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]);
-//    b = x[2]*(-z[0] + z[1]) + x[1]*(z[0] - z[2]) + x[0]*(-z[1] + z[2]);
-//    c = x[2]*(y[0] - y[1]) + x[0]*(y[1] - y[2]) + x[1]*(-y[0] + y[2]);
-//    d = sqrt(a*a + b*b + c*c);
-//    a = a/d;
-//    b = b/d;
-//    c = c/d;
-//    d = -(a*x[0]+ b*y[0] + c*z[0]);
-//    // {
-    //   double s =  -(a*x[1]+ b*y[1] + c*z[1]);
-    //   double h =  -(a*x[2]+ b*y[2] + c*z[2]);
-    //   if (d-s > 0.00001) {cout << "d is wrong.\n";
-    //     cout << "d is " << d << " s is " << s ;
-    //   }
-    //   if (h-s > 000001) cout << "d is wrong.\n";
-      
-    // }
-//    }
-  
-//  face_. Kp[0] = a*a;
-//  face_. Kp[1] = a*b;
-//  face_. Kp[2] = a*c;
-//  face_. Kp[3] = a*d;
-//  face_. Kp[4] = b*b;
-//  face_. Kp[5] = b*c;
-//  face_. Kp[6] = b*d;
-//  face_. Kp[7] = c*c;
-//  face_. Kp[8] = c*d;
-//  face_. Kp[9] = d*d;
 }
 
 
@@ -322,9 +261,9 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
       face_id = HalfEdges[edge_id]. face_;
-  vertex_. Kp = vector<double> (10);
+  vertex_. Kp = matrix<double> (4,4);
   do{
-    plus_vector(vertex_.Kp, Faces[face_id].Kp, vertex_.Kp);
+    vertex_.Kp += Faces[face_id].Kp;
     edge_id = HalfEdges[edge_id]. next_;
     edge_id = HalfEdges[edge_id]. oppo_;
     face_id = HalfEdges[edge_id]. face_;
