@@ -6,7 +6,7 @@
 #include<memory>
 #include<map>
 using namespace std;
-
+using namespace zjucad::matrix;
 bool operator<(const H_edge &a, const H_edge &b)
 {
   return a.length<b.length;
@@ -30,9 +30,9 @@ halfedge::halfedge()
 {
 }
 
-int halfedge::ReadData(const string &InputFile){
+int halfedge::read_data(const string &input_file){
 
-  filename = InputFile;
+  filename = input_file;
   ifstream fin(filename);
   if (fin.is_open()==false)
    return -1;
@@ -42,19 +42,19 @@ int halfedge::ReadData(const string &InputFile){
 
   while(!fin.eof()){  //read the data line by line
     if(keyword=="#")
-      ReadAnno(fin,keyword);
+      read_anno(fin,keyword);
 
     else if(keyword=="v")
-      ReadVertex(fin,keyword);
+      read_vertex(fin,keyword);
 
     else if(keyword=="f")
-      ReadFace(fin,keyword);
+      read_face(fin,keyword);
 
     else if(keyword=="vn")
-      ReadAnno(fin,keyword);
+      read_anno(fin,keyword);
     
     else if(keyword == "s")
-      ReadAnno(fin,keyword);
+      read_anno(fin,keyword);
     
     else
       cout<<"this identity is not exit.\n";
@@ -68,18 +68,18 @@ int halfedge::ReadData(const string &InputFile){
 }
 
 
-void halfedge::ReadVertex( ifstream &fin,string &keyword){
+void halfedge::read_vertex( ifstream &fin,string &keyword){
   H_vertex vertex_temp;
-
-  fin>>vertex_temp.x;
-  fin>>vertex_temp.y;
-  fin>>vertex_temp.z;
+  vertex_temp.position = matrix<double>(3,1);
+  fin>>vertex_temp.position(0);
+  fin>>vertex_temp.position(1);
+  fin>>vertex_temp.position(2);
   this->Vertexs.push_back(vertex_temp);
 
   fin>>keyword;
 }
 
-void halfedge::ReadFace(ifstream &fin,string &keyword){
+void halfedge::read_face(ifstream &fin,string &keyword){
   fin>>keyword;
   int position = keyword.find("/",0);
   if (position != -1){
@@ -110,7 +110,7 @@ void halfedge::ReadFace(ifstream &fin,string &keyword){
 
   }
 }
-void halfedge::ReadAnno(ifstream &fin, string &keyword){
+void halfedge::read_anno(ifstream &fin, string &keyword){
   string temp;
   getline(fin,temp);
   fin>>keyword;
@@ -213,7 +213,7 @@ void halfedge::halfedge_to_obj( const string &outfile){
     size_t count=1;
     for (size_t i = 0;i < num_vertex; i++){
       if (Vertexs[i]. is_exist){
-        fout<<"v "<<Vertexs[i]. x<<" "<<Vertexs[i]. y<<" "<<Vertexs[i]. z<<"\n";
+        fout<<"v "<<Vertexs[i].position(0)<<" "<<Vertexs[i].position(1)<<" "<<Vertexs[i].position(2)<<"\n";
         turn[i] = count;
         ++count;
       }
@@ -246,28 +246,55 @@ void halfedge::halfedge_to_obj( const string &outfile){
 
 void halfedge::cal_Kp_face(H_face &face_){
   face_.Kp = vector<double>(10);
-  vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
-    size_t edge_id = face_.edge_,
-        vertex_id = HalfEdges[edge_id].vertex_;
-    for(size_t i = 0; i < 3; i++){
-      x[i] = Vertexs[vertex_id].x;
-      y[i] = Vertexs[vertex_id].y;
-      z[i] = Vertexs[vertex_id].z;
+//  vector<double> x(3),y(3),z(3);{//store the three vertexs' coordinate
+//    size_t edge_id = face_.edge_,
+//        vertex_id = HalfEdges[edge_id].vertex_;
+//    for(size_t i = 0; i < 3; i++){
+//      x[i] = Vertexs[vertex_id].x;
+//      y[i] = Vertexs[vertex_id].y;
+//      z[i] = Vertexs[vertex_id].z;
     
-      edge_id = HalfEdges[edge_id]. next_;
-      vertex_id = HalfEdges[edge_id]. vertex_;
-    }
+//      edge_id = HalfEdges[edge_id]. next_;
+//      vertex_id = HalfEdges[edge_id]. vertex_;
+//    }
+//  }
+  vector<size_t> vertex_id;{
+  size_t edge_id = face_.edge_;
+  vertex_id.push_back(HalfEdges[edge_id].vertex_);
+  edge_id = HalfEdges[edge_id].next_;
+  vertex_id.push_back(HalfEdges[edge_id].vertex_);
+  edge_id = HalfEdges[edge_id].next_;
+  vertex_id.push_back(HalfEdges[edge_id].vertex_);
   }
-  double a,b,c,d;{ // calculate a,b,c,d
-    a = y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]);
-    b = x[2]*(-z[0] + z[1]) + x[1]*(z[0] - z[2]) + x[0]*(-z[1] + z[2]);
-    c = x[2]*(y[0] - y[1]) + x[0]*(y[1] - y[2]) + x[1]*(-y[0] + y[2]);
-    d = sqrt(a*a + b*b + c*c);
-    a = a/d;
-    b = b/d;
-    c = c/d;
-    d = -(a*x[0]+ b*y[0] + c*z[0]);
-    // {
+
+   matrix<double> A(3,1),B(3,1);{
+       for (size_t i = 0;i < 3;i++){
+           A[i] = Vertexs[vertex_id[0]].position[i]-Vertexs[vertex_id[1]].position[i];
+           B[i] = Vertexs[vertex_id[0]].position[i]-Vertexs[vertex_id[2]].position[i];
+       }
+   }
+
+   matrix<double> face_normal(4,1);{
+       matrix<double> face_normal_temp = cross(A,B);
+       double det = norm(face_normal);
+       face_normal_temp /= det;
+       face_normal[0] = face_normal_temp[0];
+       face_normal[1] = face_normal_temp[1];
+       face_normal[2] = face_normal_temp[2];
+       face_normal[3] = -dot(face_normal,Vertexs[vertex_id[0]].position);
+   }
+   //Kp
+   matrix<double> Kp = face_normal*trans(face_normal);
+//  double a,b,c,d;{ // calculate a,b,c,d
+//    a = y[2]*(z[0] - z[1]) + y[0]*(z[1] - z[2]) + y[1]*(-z[0] + z[2]);
+//    b = x[2]*(-z[0] + z[1]) + x[1]*(z[0] - z[2]) + x[0]*(-z[1] + z[2]);
+//    c = x[2]*(y[0] - y[1]) + x[0]*(y[1] - y[2]) + x[1]*(-y[0] + y[2]);
+//    d = sqrt(a*a + b*b + c*c);
+//    a = a/d;
+//    b = b/d;
+//    c = c/d;
+//    d = -(a*x[0]+ b*y[0] + c*z[0]);
+//    // {
     //   double s =  -(a*x[1]+ b*y[1] + c*z[1]);
     //   double h =  -(a*x[2]+ b*y[2] + c*z[2]);
     //   if (d-s > 0.00001) {cout << "d is wrong.\n";
@@ -276,18 +303,18 @@ void halfedge::cal_Kp_face(H_face &face_){
     //   if (h-s > 000001) cout << "d is wrong.\n";
       
     // }
-    }
+//    }
   
-  face_. Kp[0] = a*a;
-  face_. Kp[1] = a*b;
-  face_. Kp[2] = a*c;
-  face_. Kp[3] = a*d;
-  face_. Kp[4] = b*b;
-  face_. Kp[5] = b*c;
-  face_. Kp[6] = b*d;
-  face_. Kp[7] = c*c;
-  face_. Kp[8] = c*d;
-  face_. Kp[9] = d*d;
+//  face_. Kp[0] = a*a;
+//  face_. Kp[1] = a*b;
+//  face_. Kp[2] = a*c;
+//  face_. Kp[3] = a*d;
+//  face_. Kp[4] = b*b;
+//  face_. Kp[5] = b*c;
+//  face_. Kp[6] = b*d;
+//  face_. Kp[7] = c*c;
+//  face_. Kp[8] = c*d;
+//  face_. Kp[9] = d*d;
 }
 
 

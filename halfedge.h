@@ -3,31 +3,32 @@
 #include<memory>
 #include<vector>
 #include<string>
-
+#include"zjucad/matrix/include/matrix.h"
 
 struct H_vertex ;
 struct H_face ;
 struct H_edge;
 struct H_vertex{
   H_vertex():
-      is_exist(true){};
-  double x;
-  double y;
-  double z;
+      is_exist(true){}
+  //   double x;
+  //   double y;
+  //   double z;
+  zjucad::matrix::matrix<double> position;  
   size_t edge_;
   bool is_exist;
   std::vector<double> Kp;
 };
 struct H_face{
   H_face():
-      is_exist(true){};
+      is_exist(true){}
   size_t edge_;
   bool is_exist;
   std::vector<double> Kp;
 };
 struct H_edge{ // read_only to others
   H_edge():
-      oppo_(-1),  is_exist(true) {};
+      oppo_(-1),  is_exist(true) {}
 
   size_t next_, prev_, face_, vertex_;
   int oppo_;
@@ -47,7 +48,7 @@ class halfedge
   halfedge();
 
   std::vector<int> InitFaces;
-  int ReadData(const std::string &InputFile);
+  int read_data(const std::string &input_file);
 
   void ConstructHalfedge();
 
@@ -68,9 +69,9 @@ class halfedge
   template<typename T>
   void plus_vector(std::vector<T> &a, std::vector<T> &b,std::vector<T> &result);
  private:
-  void ReadVertex(std::ifstream &fin, std::string &keyword);
-  void ReadFace(std::ifstream &fin, std::string &keyword);
-  void ReadAnno(std::ifstream &fin, std::string &keyword);
+  void read_vertex(std::ifstream &fin, std::string &keyword);
+  void read_face(std::ifstream &fin, std::string &keyword);
+  void read_anno(std::ifstream &fin, std::string &keyword);
 
 
   std::string filename;

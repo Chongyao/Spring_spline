@@ -15,7 +15,7 @@ int main(int argc,char* argv[])
 
     
     
-    if( data.ReadData(Input) != -1){
+    if( data.read_data(Input) != -1){
     data.ConstructHalfedge();
     simplify_mesh data_simp(data);
     data_simp. Simp_shorstest(itertime,Output);
