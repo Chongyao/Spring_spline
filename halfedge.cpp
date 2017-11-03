@@ -264,7 +264,7 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
       face_id = half_edges_[edge_id]. face_;
-  vertex_. Kp.resize(4,4);
+  vertex_. Kp = zeros(4,4);
   do{
     vertex_.Kp += faces_[face_id].Kp;
     edge_id = half_edges_[edge_id]. next_;
