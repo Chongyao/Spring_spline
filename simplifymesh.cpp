@@ -34,7 +34,7 @@ void simplify_mesh::simp_shorstest(const size_t &iter_times, const string &outfi
    //     cout << "edge_id is " << iter->first.id << "value is " << iter->first.value << endl;
    //     cout << iter->second << endl;
    // }
-         
+
     size_t edge_id ;
     matrix<double> new_V;{
       auto iter = priority.upper_bound(zero_);
@@ -114,13 +114,7 @@ size_t  edge_r_id = edge_id;
       
       {
         if (mesh_init.vertexs_[vertex_id].edge_ == edge_r_id ){
-          size_t edge_c_id = edge_r_id;
-          do{
-            edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
-            edge_c_id = mesh_init.half_edges_[edge_c_id].prev_;
-            if (mesh_init.half_edges_[edge_c_id].is_exist)
-              mesh_init.vertexs_[vertex_id].edge_ = edge_c_id;
-          }while(!mesh_init.half_edges_[edge_c_id].is_exist);
+          int ret = mesh_init.correct_vertex(vertex_id);
         }
       }
       edge_r_id = mesh_init.half_edges_[edge_r_id].next_;
@@ -131,13 +125,7 @@ size_t  edge_r_id = edge_id;
       mesh_init.half_edges_[edge_r_id].is_exist = false;
       size_t vertex_id = mesh_init.half_edges_[edge_r_id].vertex_;
       if (mesh_init.vertexs_[vertex_id].edge_ == edge_r_id ){
-        size_t edge_c_id = edge_r_id;
-        do{
-          edge_c_id = mesh_init.half_edges_[edge_c_id].oppo_;
-          edge_c_id = mesh_init.half_edges_[edge_c_id].prev_;
-          if (mesh_init.half_edges_[edge_c_id].is_exist)
-            mesh_init.vertexs_[vertex_id].edge_ = edge_c_id;
-        }while(!mesh_init.half_edges_[edge_c_id].is_exist);
+        int ret = mesh_init.correct_vertex(vertex_id);
       }
       edge_r_id = mesh_init.half_edges_[edge_r_id].next_;
     }while(edge_oppo_id != edge_r_id);
@@ -267,13 +255,14 @@ void simplify_mesh::change_priority(const size_t &vertex_ur_id){
 void simplify_mesh::make_priority(){
   size_t num = mesh_init.half_edges_.size();
   for (size_t i = 0; i < num; i++){
-    double value;
-    matrix<double> V(4,1);
-    cal_error(i,value,V);
-    ident A = {i,value};
-    mesh_init.half_edges_[i]. length = value;
-    priority.insert({A,V});
-    
+    if(mesh_init.half_edges_[i].is_exist == true) {
+        double value;
+        matrix<double> V(4,1);
+        cal_error(i,value,V);
+        ident A = {i,value};
+        mesh_init.half_edges_[i]. length = value;
+        priority.insert({A,V});
+    }
   }
 
   
@@ -442,3 +431,4 @@ void simplify_mesh::cal_error(const size_t &edge_id, double &error, matrix<doubl
       
 }
   
+

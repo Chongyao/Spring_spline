@@ -246,7 +246,7 @@ void halfedge::cal_Kp_face(H_face &face_){
    matrix<double> face_normal(4,1);{
        matrix<double> face_normal_temp = cross(A,B);
        double det = norm(face_normal_temp);
-       if(det != 0){
+       if(det > 1e-20){
        face_normal_temp /= det;
        face_normal[0] = face_normal_temp[0];
        face_normal[1] = face_normal_temp[1];
@@ -262,13 +262,7 @@ void halfedge::cal_Kp_face(H_face &face_){
 
                size_t vertex_c_id = half_edges_[edge_id].vertex_;
                if (vertexs_[vertex_c_id].edge_ == edge_id ){
-                 size_t edge_c_id = edge_id;
-                 do{
-                   edge_c_id = half_edges_[edge_c_id].oppo_;
-                   edge_c_id = half_edges_[edge_c_id].prev_;
-                   if (half_edges_[edge_c_id].is_exist)
-                     vertexs_[vertex_c_id].edge_ = edge_c_id;
-                 }while(!half_edges_[edge_c_id].is_exist);
+               int ret = correct_vertex(vertex_c_id);
                }
 
 
@@ -307,4 +301,31 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
     face_id = half_edges_[edge_id]. face_;
   }while(edge_id != edge_end_id);
 
+}
+int halfedge::correct_vertex(const size_t &vertex_id){
+    size_t edge_id = vertexs_[vertex_id].edge_,
+            edge_c_id = edge_id;
+    do{
+      edge_c_id = half_edges_[edge_c_id].oppo_;
+      edge_c_id = half_edges_[edge_c_id].prev_;
+      if (half_edges_[edge_c_id].is_exist)
+        vertexs_[vertex_id].edge_ = edge_c_id;
+    }while(edge_c_id != edge_id);
+    if (edge_c_id == edge_id)
+        return 0;
+    else{
+        for (size_t i = 0;i < half_edges_.size();i++){
+            if (half_edges_[i].vertex_ == vertex_id)
+                vertexs_[vertex_id].edge_ = i;
+        }
+    }
+
+    if (half_edges_[vertexs_[vertex_id].edge_].is_exist == true){
+        cout << "the topology is error !" << endl;
+        return 0;
+    }
+    else{
+        vertexs_[vertex_id].is_exist = false;
+        return -1;
+    }
 }
