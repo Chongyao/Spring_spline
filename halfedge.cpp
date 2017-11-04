@@ -149,34 +149,32 @@ void halfedge::construct_half_edges(){
    }
 
   }
+cout << "init_facs to faces" <<endl;
 
 
-  //find the opposite by map
-  
+//cal the faces kp
+size_t num_faces = faces_.size();
+for(size_t i = 0; i < num_faces; i++){
+  cal_Kp_face(faces_[i]);
+}
+cout << "Kp of faces is calculated."<<endl;
+
+//find the opposite by map
   for(auto it = pairs.begin();it != pairs.end(); it++){
+
     auto it_oppo = pairs.find({it->first.second, it->first.first});
-    if(half_edges_[it->second].oppo_ == -1 && it_oppo != pairs.end()){
+    if(half_edges_[it->second].is_exist == true && half_edges_[it->second].oppo_ == -1 && it_oppo != pairs.end()){
       half_edges_[it->second].oppo_ = it_oppo->second;
       half_edges_[it_oppo->second].oppo_ = it->second;
-    
     }
   } 
+  cout << "find the opposite edge by map" <<endl;
 
-  //cal the faces kp
-  size_t num_faces = faces_.size();
-  for(size_t i = 0; i < num_faces; i++){
-    cal_Kp_face(faces_[i]);
-  }
-  
+
 
   //cal the vertexs_ Kp
-
-  
-    size_t num_vertexs_ = vertexs_.size();
-    for (size_t i = 0; i < num_vertexs_; i++){
-      cal_Kp_vertex(vertexs_[i]);
-    }
-    cout << "kP of vertexs_ is calculated.\n";
+  cal_Kp_vertexs_();
+  cout << "kP of vertexs_ is calculated.\n";
   
   
 
@@ -248,18 +246,55 @@ void halfedge::cal_Kp_face(H_face &face_){
    matrix<double> face_normal(4,1);{
        matrix<double> face_normal_temp = cross(A,B);
        double det = norm(face_normal_temp);
+       if(det != 0){
        face_normal_temp /= det;
        face_normal[0] = face_normal_temp[0];
        face_normal[1] = face_normal_temp[1];
        face_normal[2] = face_normal_temp[2];
        face_normal[3] = -dot(face_normal,vertexs_[vertex_id[0]].position);
+       }
+       else{
+           face_.is_exist = false;
+           size_t edge_id = face_.edge_,
+                   edge_end = edge_id;
+           do {
+               half_edges_[edge_id].is_exist = false;
+
+               size_t vertex_c_id = half_edges_[edge_id].vertex_;
+               if (vertexs_[vertex_c_id].edge_ == edge_id ){
+                 size_t edge_c_id = edge_id;
+                 do{
+                   edge_c_id = half_edges_[edge_c_id].oppo_;
+                   edge_c_id = half_edges_[edge_c_id].prev_;
+                   if (half_edges_[edge_c_id].is_exist)
+                     vertexs_[vertex_c_id].edge_ = edge_c_id;
+                 }while(!half_edges_[edge_c_id].is_exist);
+               }
+
+
+               edge_id = half_edges_[edge_id].next_;
+           }while(edge_id != edge_end);
+       }
+
+       //Kp
+       face_.Kp = face_normal*trans(face_normal);
    }
-
-   //Kp
-   face_.Kp = face_normal*trans(face_normal);
 }
+//use for construct
+void halfedge::cal_Kp_vertexs_(){
+    size_t num_faces = faces_.size();
+    for(size_t i = 0;i < num_faces;i++){
+        size_t edge_id = faces_[i].edge_,
+                edge_end = edge_id;
+        do{
+            size_t vertex_id = half_edges_[edge_id].vertex_;
+            vertexs_[vertex_id].Kp += faces_[i].Kp;
+            edge_id = half_edges_[edge_id].next_;
+        }while(edge_id != edge_end);
+    }
 
-
+}
+//use for modify
 void halfedge::cal_Kp_vertex(H_vertex &vertex_){
   size_t edge_id = vertex_. edge_,
       edge_end_id = vertex_.edge_,
@@ -271,6 +306,5 @@ void halfedge::cal_Kp_vertex(H_vertex &vertex_){
     edge_id = half_edges_[edge_id]. oppo_;
     face_id = half_edges_[edge_id]. face_;
   }while(edge_id != edge_end_id);
-
 
 }

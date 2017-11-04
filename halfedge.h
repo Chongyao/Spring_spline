@@ -64,6 +64,7 @@ class halfedge
 
   void cal_Kp_face(H_face & face_);
   void cal_Kp_vertex(H_vertex &vertex_);
+  void cal_Kp_vertexs_();
 
  private:
   void read_vertex(std::ifstream &fin, std::string &keyword);

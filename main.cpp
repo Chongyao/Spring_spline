@@ -4,23 +4,23 @@
 #include"simplifymesh.h"
 #define iter_times_default 500
 using namespace std;
-void read_argv( int argc, char** argv,string &Input, string &Output, size_t &itertime);
+void read_argv( int argc, char** argv,string &input_, string &output_, size_t &itertime);
 int main(int argc,char* argv[])
 {
     halfedge data;
-    string Input="../data/input/",
-        Output = "../data/output/";
+    string input_="../data/input/",
+        output_ = "../data/output/";
     size_t itertime = 0 ;
-    read_argv(argc-1,argv+1,Input,Output,itertime);
+    read_argv(argc-1,argv+1,input_,output_,itertime);
 
     
     
-    if( data.read_data(Input) != -1){
+    if( data.read_data(input_) != -1){
     data.construct_half_edges();
     simplify_mesh data_simp(data);
-    data_simp.simp_shorstest(itertime,Output);
-    Output.append("last.obj");
-    data_simp.mesh_init. halfedge_to_obj(Output);
+    data_simp.simp_shorstest(itertime,output_);
+    output_.append("last.obj");
+    data_simp.mesh_init. halfedge_to_obj(output_);
     }
     else
       cout << "read error";
@@ -29,18 +29,18 @@ int main(int argc,char* argv[])
 
 
 
-void read_argv( int argc, char** argv,string &Input, string &Output, size_t &itertime){
+void read_argv( int argc, char** argv,string &input_, string &output_, size_t &itertime){
   for (size_t i = 0; i < argc ;i++){
     string keyword = argv[i];
     if( keyword.find("infile") != -1){
-      Input.append(keyword.begin()+7,keyword.end());
-      Input.append(".obj");
+      input_.append(keyword.begin()+7,keyword.end());
+      input_.append(".obj");
       
     }
     else if (keyword.find("outfile") != -1){
-      Output.append(keyword.begin()+8,keyword.end());
-      Output.append("/");
-      Output.append(keyword.begin()+8,keyword.end());
+      output_.append(keyword.begin()+8,keyword.end());
+      output_.append("/");
+      output_.append(keyword.begin()+8,keyword.end());
     }
     else if (keyword.find("itertime") != -1){
       stringstream iter_;

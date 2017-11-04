@@ -397,26 +397,44 @@ void simplify_mesh::modify_priority (const size_t &edge_id, const double &value_
  
 }
 void simplify_mesh::cal_error(const size_t &edge_id, double &error, matrix<double>&V){
-  matrix<double> Q;{//calculate Q
+  matrix<double> Q;//calculate Q
     size_t vertex_id_1 = mesh_init.half_edges_[edge_id].vertex_,
         edge_id_prev = mesh_init.half_edges_[edge_id].prev_,
         vertex_id_2 = mesh_init.half_edges_[edge_id_prev].vertex_;
-    
+
     Q = mesh_init.vertexs_[vertex_id_1].Kp + mesh_init.vertexs_[vertex_id_2].Kp;
-  }
+
+
     //calculateinverse the V
   double delt = -(pow(Q(0,2),2)*Q(1,1)) + 2*Q(0,1)*Q(0,2)*Q(1,2) - Q(0,0)*pow(Q(1,2),2) - pow(Q(0,1),2)*Q(2,2) + Q(0,0)*Q(1,1)*Q(2,2); 
 
-      if( delt > 1e-18){
+      if( delt > 1e-30){
         V(0) = (-(Q(0,2)*Q(1,2)*Q(1,3)) + Q(0,1)*Q(1,3)*Q(2,2) + Q(0,3)*(pow(Q(1,2),2) - Q(1,1)*Q(2,2)) + Q(0,2)*Q(1,1)*Q(2,3) - Q(0,1)*Q(1,2)*Q(2,3))/delt;
         V(1) = (pow(Q(0,2),2)*Q(1,3) + Q(0,1)*Q(0,3)*Q(2,2) - Q(0,0)*Q(1,3)*Q(2,2) + Q(0,0)*Q(1,2)*Q(2,3) - Q(0,2)*(Q(0,3)*Q(1,2) + Q(0,1)*Q(2,3)))/delt;
         V(2) = (Q(0,2)*Q(0,3)*Q(1,1) - Q(0,1)*Q(0,3)*Q(1,2) - Q(0,1)*Q(0,2)*Q(1,3) + Q(0,0)*Q(1,2)*Q(1,3) + pow(Q(0,1),2)*Q(2,3) - Q(0,0)*Q(1,1)*Q(2,3))/delt;
         V(3) = 1;
+        error = dot(trans(V),Q * V);
       }
       else{
-        cout << "error";//!!!!!!!!!!!!!!!!!! consider Q is alwats invetable
+          cout << "edge id is " << edge_id << endl;
+          cout << "error! delt is " << delt << endl;
+          cout << mesh_init.vertexs_[vertex_id_1].Kp <<endl << mesh_init.vertexs_[vertex_id_2].Kp <<endl;
+          cout << "Q is " << Q << endl;//!!!!!!!!!!!!!!!!!! consider Q is alwats invetable
+
+          matrix<double> errors(3,1);
+          errors(0) = dot(trans(mesh_init.vertexs_[vertex_id_1].position),Q*mesh_init.vertexs_[vertex_id_1].position);
+          errors(1) = dot(trans(mesh_init.vertexs_[vertex_id_2].position),Q*mesh_init.vertexs_[vertex_id_2].position);
+          V = 0.5*mesh_init.vertexs_[vertex_id_1].position + 0.5*mesh_init.vertexs_[vertex_id_2].position;
+          errors(2) = dot(trans(V),Q*V);
+          error = min(errors);
+          if (error == errors(0)) V = mesh_init.vertexs_[vertex_id_1].position;
+          else  V = mesh_init.vertexs_[vertex_id_2].position;
+
+
+
+
       }
-      error = dot(trans(V),Q * V);
+
       //       cout <<"edge is " << edge_id <<  "error is " << error <<endl;
       //      cout << "V is " << V[0]<< " " << V[1] << " " << V[2] << endl;
       //cout << Q << endl;
