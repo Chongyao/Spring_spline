@@ -27,29 +27,29 @@ void simplify_mesh::simp_shorstest(const size_t &iter_times, const string &outfi
   cout <<"the size is "<< priority.size() << "\n";
 
 
- 
-  {    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[158503].vertex_].edge_,
-        edge_e = edge_s;
-    cout << "edge -> vertex is " << mesh_init.half_edges_[158503].vertex_ << endl;
-    size_t vertex_s;
-    do {
-      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
-      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
+ //use for debug
+//  {    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[158503].vertex_].edge_,
+//        edge_e = edge_s;
+//    cout << "edge -> vertex is " << mesh_init.half_edges_[158503].vertex_ << endl;
+//    size_t vertex_s;
+//    do {
+//      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
+//      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
                                                                                                                           
-                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
-    }while(edge_s != edge_e);
-      cout << "the oppo is " <<endl;
-      edge_s = mesh_init.half_edges_[edge_s].oppo_;
-      edge_e = edge_s;
-      do {
-      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
-      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
+//                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
+//    }while(edge_s != edge_e);
+//      cout << "the oppo is " <<endl;
+//      edge_s = mesh_init.half_edges_[edge_s].oppo_;
+//      edge_e = edge_s;
+//      do {
+//      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
+//      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
                                                                                                                           
-                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
-    }while(edge_s != edge_e);
+//                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
+//    }while(edge_s != edge_e);
       
-      cout << "here1" << endl;
-  }
+//      cout << "here1" << endl;
+//  }
 
 
 
@@ -58,6 +58,7 @@ void simplify_mesh::simp_shorstest(const size_t &iter_times, const string &outfi
    
   for(size_t i = 0; i < iter_times; i++){
     cout << i << " iteration:\n";
+
    //     cout << "priority is: " << endl; 
    // for (auto iter = priority.begin();iter != priority.end(); iter++){
    //     cout << "edge_id is " << iter->first.id << "value is " << iter->first.value << endl;
@@ -130,67 +131,67 @@ void simplify_mesh::change_topology( const matrix<double> &new_V, const size_t &
 
 
   
-  if (edge_id == 158507) {
-    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[edge_id].vertex_].edge_,
-        edge_e = edge_s;
-    cout << "edge -> vertex is " << mesh_init.half_edges_[edge_id].vertex_ << endl;
-    size_t vertex_s;
-    do {
-      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
-      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
+//  if (edge_id == 158507) {
+//    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[edge_id].vertex_].edge_,
+//        edge_e = edge_s;
+//    cout << "edge -> vertex is " << mesh_init.half_edges_[edge_id].vertex_ << endl;
+//    size_t vertex_s;
+//    do {
+//      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
+//      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
                                                                                                                           
-                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
-    }while(edge_s != edge_e);
-      cout << "the oppo is " <<endl;
-      edge_s = mesh_init.half_edges_[edge_s].oppo_;
-      edge_e = edge_s;
-      do {
-      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
-      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
+//                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
+//    }while(edge_s != edge_e);
+//      cout << "the oppo is " <<endl;
+//      edge_s = mesh_init.half_edges_[edge_s].oppo_;
+//      edge_e = edge_s;
+//      do {
+//      vertex_s = mesh_init.half_edges_[edge_s].vertex_;
+//      cout << "the edge is " << edge_s << "the edge ->vertex is " << vertex_s << "the position of the vertex is " << mesh_init.vertexs_[vertex_s].position << endl;
                                                                                                                           
-                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
-    }while(edge_s != edge_e);
+//                                                                                                                                                              edge_s = mesh_init.half_edges_[edge_s].next_;
+//    }while(edge_s != edge_e);
       
-      cout << "here1" << endl;
-  }
+//      cout << "here1" << endl;
+//  }
 
 
   delete_half_edges(edge_id,edge_oppo_id);
   delete_vertex(edge_oppo_id);
   delete_faces(edge_id,edge_oppo_id);
 
-if (edge_id == 158507) {
-    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[edge_id].vertex_].edge_,
-        edge_e = edge_s;
-    cout << "edge -> vertex is " << mesh_init.half_edges_[edge_id].vertex_ << endl;
-    do {
-      if (mesh_init.half_edges_[edge_s].is_exist == false)
-        cout << "the edge " << edge_s << " should exist." << endl;
-      edge_s = mesh_init.half_edges_[edge_s].next_;
-      if (mesh_init.half_edges_[edge_s].is_exist == false)
-        cout << "the edge " << edge_s << " should exist." << endl;
-      edge_s = mesh_init.half_edges_[edge_s].oppo_;
-    }while(edge_s != edge_e);
+//if (edge_id == 158507) {
+//    size_t edge_s = mesh_init.vertexs_[mesh_init.half_edges_[edge_id].vertex_].edge_,
+//        edge_e = edge_s;
+//    cout << "edge -> vertex is " << mesh_init.half_edges_[edge_id].vertex_ << endl;
+//    do {
+//      if (mesh_init.half_edges_[edge_s].is_exist == false)
+//        cout << "the edge " << edge_s << " should exist." << endl;
+//      edge_s = mesh_init.half_edges_[edge_s].next_;
+//      if (mesh_init.half_edges_[edge_s].is_exist == false)
+//        cout << "the edge " << edge_s << " should exist." << endl;
+//      edge_s = mesh_init.half_edges_[edge_s].oppo_;
+//    }while(edge_s != edge_e);
     
-    cout << "here1" << endl;
-  }
+//    cout << "here1" << endl;
+//  }
   
   size_t vertex_ur_id = change_vertex(edge_id, edge_oppo_id, new_V, result);
   change_oppoedge(edge_id,edge_oppo_id);
 
-  if (edge_id == 158507) {
-    size_t edge_s = mesh_init.vertexs_[vertex_ur_id].edge_,
-        edge_e = edge_s;
-    do {
-      if (mesh_init.half_edges_[edge_s].is_exist == false)
-        cout << "the edge " << edge_s << " should exist." << endl;
-      edge_s = mesh_init.half_edges_[edge_s].next_;
-      if (mesh_init.half_edges_[edge_s].is_exist == false)
-        cout << "the edge " << edge_s << " should exist." << endl;
-      edge_s = mesh_init.half_edges_[edge_s].oppo_;
-    }while(edge_s != edge_e);
-    cout << "here" << endl;
-  }
+//  if (edge_id == 158507) {
+//    size_t edge_s = mesh_init.vertexs_[vertex_ur_id].edge_,
+//        edge_e = edge_s;
+//    do {
+//      if (mesh_init.half_edges_[edge_s].is_exist == false)
+//        cout << "the edge " << edge_s << " should exist." << endl;
+//      edge_s = mesh_init.half_edges_[edge_s].next_;
+//      if (mesh_init.half_edges_[edge_s].is_exist == false)
+//        cout << "the edge " << edge_s << " should exist." << endl;
+//      edge_s = mesh_init.half_edges_[edge_s].oppo_;
+//    }while(edge_s != edge_e);
+//    cout << "here" << endl;
+//  }
   
   change_face_kp (vertex_ur_id);
   change_vertex_kp(vertex_ur_id);
